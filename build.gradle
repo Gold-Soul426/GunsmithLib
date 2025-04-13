@@ -143,6 +143,9 @@ repositories {
     }
 
     maven {
+        url 'https://maven.blamejared.com'
+    }
+    maven {
         url = "https://maven.theillusivec4.top/"
     }
 
@@ -179,8 +182,14 @@ dependencies {
     runtimeOnly fg.deobf('curse.maven:youkais-homecoming-957437:5919029')
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.9.1+1.20.1")
     runtimeOnly fg.deobf('curse.maven:lionfish-api-1001614:5922047')
-    runtimeOnly fg.deobf('curse.maven:lendercataclysm-551586:5924796')
+    runtimeOnly fg.deobf('curse.maven:lendercataclysm-551586:6370058')
     runtimeOnly fg.deobf('curse.maven:grimoire-of-gaia-228948:5678610')
+
+    // Visit https://www.curseforge.com/minecraft/mc-mods/jade/files/all?filter-status=1&filter-game-version=2020709689%3A7498
+    // to get the latest version's jade_id
+    runtimeOnly fg.deobf("curse.maven:jade-324717:6271651")
+    runtimeOnly fg.deobf("curse.maven:attributefix-280510:4911084")
+    runtimeOnly fg.deobf("net.darkhax.bookshelf:Bookshelf-Forge-1.20.1:20.2.13")
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
