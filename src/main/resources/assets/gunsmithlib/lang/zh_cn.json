@@ -7,5 +7,7 @@
   "attribute.name.gunsmithlib.vert_recoil.desc": "纵向的后座力",
   "attribute.name.gunsmithlib.horz_recoil": "横向后座",
   "attribute.name.gunsmithlib.horz_recoil.desc": "横向的后座力",
+  "attribute.name.gunsmithlib.rpm": "射速（发/分钟）",
+  "attribute.name.gunsmithlib.rpm.desc": "武器的射速，即每分钟发射的子弹的数量",
   "effect.gunsmithlib.crossfire": "交叉火力"
 }

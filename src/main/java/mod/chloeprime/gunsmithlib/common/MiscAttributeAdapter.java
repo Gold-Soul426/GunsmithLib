@@ -1,9 +1,11 @@
 package mod.chloeprime.gunsmithlib.common;
 
-import com.tacz.guns.api.TimelessAPI;
+import com.tacz.guns.api.entity.IGunOperator;
 import com.tacz.guns.api.event.common.EntityHurtByGunEvent;
-import com.tacz.guns.api.item.IGun;
+import com.tacz.guns.resource.modifier.custom.AmmoSpeedModifier;
+import com.tacz.guns.resource.modifier.custom.RpmModifier;
 import com.tacz.guns.util.AttachmentDataUtils;
+import mod.chloeprime.gunsmithlib.api.util.Gunsmith;
 import mod.chloeprime.gunsmithlib.common.util.GsHelper;
 import mod.chloeprime.gunsmithlib.common.util.InternalBulletCreateEvent;
 import net.minecraft.world.entity.EntityType;
@@ -58,6 +60,11 @@ public class MiscAttributeAdapter {
         bullet.setDeltaMovement(direction.scale(newSpeed));
     }
 
+    public static double rpm(LivingEntity attacker) {
+        var attribute = RPM.get();
+        return attacker.getAttributeValue(attribute);
+    }
+
     @SubscribeEvent
     public static void defaultValues(TickEvent.PlayerTickEvent event) {
         if (event.player.level().isClientSide) {
@@ -68,17 +75,24 @@ public class MiscAttributeAdapter {
             return;
         }
         var newMH = event.player.getMainHandItem();
-        Optional.ofNullable(IGun.getIGunOrNull(newMH))
-                .map(kun -> kun.getGunId(newMH))
-                .flatMap(TimelessAPI::getCommonGunIndex)
-                .ifPresentOrElse(index -> {
-                    var damage = AttachmentDataUtils.getDamageWithAttachment(newMH, index.getGunData()) / index.getBulletData().getBulletAmount();
-                    var speed = index.getBulletData().getSpeed() / 20;
+        Gunsmith.getGunInfo(newMH).ifPresentOrElse(gun -> {
+                    var cache = IGunOperator.fromLivingEntity(event.player).getCacheProperty();
+
+                    double damage = AttachmentDataUtils.getDamageWithAttachment(newMH, gun.index().getGunData()) / gun.index().getBulletData().getBulletAmount();
+                    float speed = (cache == null
+                            ? gun.index().getBulletData().getSpeed()
+                            : cache.<Float>getCache(AmmoSpeedModifier.ID)) / 20;
+                    int rpm = cache == null
+                            ? gun.index().getGunData().getRoundsPerMinute(gun.getFireMode())
+                            : cache.<Integer>getCache(RpmModifier.ID);
+
                     setBaseValue(event.player, BULLET_DAMAGE.get(), damage);
                     setBaseValue(event.player, BULLET_SPEED.get(), speed);
+                    setBaseValue(event.player, RPM.get(), rpm);
                 }, () -> {
                     setBaseValue(event.player, BULLET_DAMAGE.get(), 0);
                     setBaseValue(event.player, BULLET_SPEED.get(), 0);
+                    setBaseValue(event.player, RPM.get(), 300);
                 });
     }
 
@@ -95,7 +109,8 @@ public class MiscAttributeAdapter {
                     BULLET_DAMAGE,
                     BULLET_SPEED,
                     V_RECOIL,
-                    H_RECOIL));
+                    H_RECOIL,
+                    RPM));
         }
 
         @SafeVarargs

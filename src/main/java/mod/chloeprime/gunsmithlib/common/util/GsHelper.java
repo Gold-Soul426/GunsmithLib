@@ -15,15 +15,15 @@ public class GsHelper {
         return TimelessAPI.getCommonGunIndex(gunId).map(index -> new GunInfo(gunStack, gunItem, gunId, index));
     }
 
-    public static double getAttributeValueWithBase(LivingEntity holder, Attribute attribute, double newBase) {
+    public static double getAttributeValueWithBase(LivingEntity holder, Attribute attribute, double base) {
         var instance = holder.getAttribute(attribute);
         if (instance == null) {
-            return newBase;
+            return base;
         }
 
         var oldBase = instance.getBaseValue();
         try {
-            instance.setBaseValue(newBase);
+            instance.setBaseValue(base);
             return instance.getValue();
         } finally {
             instance.setBaseValue(oldBase);

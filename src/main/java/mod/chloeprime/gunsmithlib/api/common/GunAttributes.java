@@ -24,4 +24,10 @@ public class GunAttributes {
      * 水平后坐力
      */
     public static final RegistryObject<Attribute> H_RECOIL = GunsmithLib.Attributes.H_RECOIL;
+
+    /**
+     * 水平后坐力
+     * @since 2.1.0
+     */
+    public static final RegistryObject<Attribute> RPM = GunsmithLib.Attributes.RPM;
 }

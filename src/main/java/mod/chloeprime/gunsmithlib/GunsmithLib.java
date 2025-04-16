@@ -58,6 +58,8 @@ public class GunsmithLib {
                 ).setSyncable(true)
         );
 
+        public static final RegistryObject<Attribute> RPM = create("rpm", 1, 1, 1200, attribute -> attribute.setSyncable(true));
+
 
         @SuppressWarnings("SameParameterValue")
         private static RegistryObject<Attribute> create(String name, double defaultValue, double min, double max) {

@@ -6,6 +6,7 @@
   "refmap": "gunsmithlib.refmap.json",
   "mixins": [
     "MixinBullet",
+    "MixinGunData",
     "MixinLivingEntity",
     "MixinMob",
     "MixinReloadProcedure",
