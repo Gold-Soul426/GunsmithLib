@@ -2,6 +2,7 @@ package mod.chloeprime.gunsmithlib.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import mod.chloeprime.gunsmithlib.common.internal.GunAttributeSyncState;
 import mod.chloeprime.gunsmithlib.common.util.FloatConsumer;
 import mod.chloeprime.gunsmithlib.common.util.HurtFunction1;
 import mod.chloeprime.gunsmithlib.common.util.HurtFunction2;
@@ -15,9 +16,10 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(LivingEntity.class)
-public abstract class MixinLivingEntity implements SpecialHurtable {
+public abstract class MixinLivingEntity implements SpecialHurtable, GunAttributeSyncState {
     @Shadow public abstract void setHealth(float p_21154_);
 
+    private @Unique boolean gunsmith$isInGunAttributeMode;
     private @Unique boolean gunsmith$isDoingSpecialHurtProcedure;
 
     @WrapOperation(
@@ -73,6 +75,16 @@ public abstract class MixinLivingEntity implements SpecialHurtable {
     @Override
     public void gunsmith$endSpecialHurt() {
         gunsmith$isDoingSpecialHurtProcedure = false;
+    }
+
+    @Override
+    public boolean gunsmith$isInGunMode() {
+        return gunsmith$isInGunAttributeMode;
+    }
+
+    @Override
+    public void gunsmith$setInGunMode(boolean value) {
+        gunsmith$isInGunAttributeMode = value;
     }
 
     @Shadow public abstract boolean hurt(@NotNull DamageSource p_21016_, float p_21017_);

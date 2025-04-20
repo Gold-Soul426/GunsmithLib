@@ -6,6 +6,7 @@ import com.tacz.guns.resource.modifier.custom.AmmoSpeedModifier;
 import com.tacz.guns.resource.modifier.custom.RpmModifier;
 import com.tacz.guns.util.AttachmentDataUtils;
 import mod.chloeprime.gunsmithlib.api.util.Gunsmith;
+import mod.chloeprime.gunsmithlib.common.internal.GunAttributeSyncState;
 import mod.chloeprime.gunsmithlib.common.util.GsHelper;
 import mod.chloeprime.gunsmithlib.common.util.InternalBulletCreateEvent;
 import net.minecraft.world.entity.EntityType;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -66,34 +68,41 @@ public class MiscAttributeAdapter {
     }
 
     @SubscribeEvent
-    public static void defaultValues(TickEvent.PlayerTickEvent event) {
-        if (event.player.level().isClientSide) {
+    public static void defaultValues(LivingEvent.LivingTickEvent event) {
+        var user = event.getEntity();
+        if (user.level().isClientSide) {
             return;
         }
         final var interval = 5;
-        if ((event.player.level().getGameTime() + event.player.hashCode()) % interval != 0) {
+        if ((user.level().getGameTime() + user.hashCode()) % interval != 0) {
             return;
         }
-        var newMH = event.player.getMainHandItem();
+        var newMH = user.getMainHandItem();
+        var syncState = (GunAttributeSyncState) user;
         Gunsmith.getGunInfo(newMH).ifPresentOrElse(gun -> {
-                    var cache = IGunOperator.fromLivingEntity(event.player).getCacheProperty();
+            syncState.gunsmith$setInGunMode(true);
+            var cache = IGunOperator.fromLivingEntity(user).getCacheProperty();
 
-                    double damage = AttachmentDataUtils.getDamageWithAttachment(newMH, gun.index().getGunData()) / gun.index().getBulletData().getBulletAmount();
-                    float speed = (cache == null
-                            ? gun.index().getBulletData().getSpeed()
-                            : cache.<Float>getCache(AmmoSpeedModifier.ID)) / 20;
-                    int rpm = cache == null
-                            ? gun.index().getGunData().getRoundsPerMinute(gun.getFireMode())
-                            : cache.<Integer>getCache(RpmModifier.ID);
+            double damage = AttachmentDataUtils.getDamageWithAttachment(newMH, gun.index().getGunData()) / gun.index().getBulletData().getBulletAmount();
+            float speed = (cache == null
+                    ? gun.index().getBulletData().getSpeed()
+                    : cache.<Float>getCache(AmmoSpeedModifier.ID)) / 20;
+            int rpm = cache == null
+                    ? gun.index().getGunData().getRoundsPerMinute(gun.getFireMode())
+                    : cache.<Integer>getCache(RpmModifier.ID);
 
-                    setBaseValue(event.player, BULLET_DAMAGE.get(), damage);
-                    setBaseValue(event.player, BULLET_SPEED.get(), speed);
-                    setBaseValue(event.player, RPM.get(), rpm);
-                }, () -> {
-                    setBaseValue(event.player, BULLET_DAMAGE.get(), 0);
-                    setBaseValue(event.player, BULLET_SPEED.get(), 0);
-                    setBaseValue(event.player, RPM.get(), 300);
-                });
+            setBaseValue(user, BULLET_DAMAGE.get(), damage);
+            setBaseValue(user, BULLET_SPEED.get(), speed);
+            setBaseValue(user, RPM.get(), rpm);
+        }, () -> {
+            if (!syncState.gunsmith$isInGunMode()) {
+                return;
+            }
+            syncState.gunsmith$setInGunMode(false);
+            setBaseValue(user, BULLET_DAMAGE.get(), BULLET_DAMAGE.get().getDefaultValue());
+            setBaseValue(user, BULLET_SPEED.get(), BULLET_SPEED.get().getDefaultValue());
+            setBaseValue(user, RPM.get(), RPM.get().getDefaultValue());
+        });
     }
 
     private static void setBaseValue(LivingEntity owner, Attribute attribute, double value) {
