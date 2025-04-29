@@ -2,6 +2,7 @@ package mod.chloeprime.gunsmithlib.common;
 
 import com.tacz.guns.api.entity.IGunOperator;
 import com.tacz.guns.api.event.common.EntityHurtByGunEvent;
+import com.tacz.guns.api.event.common.GunDamageSourcePart;
 import com.tacz.guns.resource.modifier.custom.AmmoSpeedModifier;
 import com.tacz.guns.resource.modifier.custom.RpmModifier;
 import com.tacz.guns.util.AttachmentDataUtils;
@@ -12,7 +13,7 @@ import mod.chloeprime.gunsmithlib.common.util.InternalBulletCreateEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraftforge.event.TickEvent;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -32,11 +33,15 @@ public class MiscAttributeAdapter {
         if (event.getLogicalSide().isClient()) {
             return;
         }
+        // 近战武器不加射击伤害
+        var src = event.getDamageSource(GunDamageSourcePart.NON_ARMOR_PIERCING);
+        var isMelee = src.getEntity() == src.getDirectEntity();
+
         var attacker = event.getAttacker();
         if (attacker == null) {
             return;
         }
-        var attribute = BULLET_DAMAGE.get();
+        var attribute = isMelee ? Attributes.ATTACK_DAMAGE : BULLET_DAMAGE.get();
         var oldDamage = event.getBaseAmount();
         var newDamage = GsHelper.getAttributeValueWithBase(attacker, attribute, oldDamage);
         event.setBaseAmount((float) newDamage);
