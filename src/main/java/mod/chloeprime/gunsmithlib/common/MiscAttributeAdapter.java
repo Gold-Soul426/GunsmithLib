@@ -5,15 +5,19 @@ import com.tacz.guns.api.event.common.EntityHurtByGunEvent;
 import com.tacz.guns.api.event.common.GunDamageSourcePart;
 import com.tacz.guns.resource.modifier.custom.AmmoSpeedModifier;
 import com.tacz.guns.resource.modifier.custom.RpmModifier;
+import com.tacz.guns.resource.pojo.data.gun.FeedType;
 import com.tacz.guns.util.AttachmentDataUtils;
 import mod.chloeprime.gunsmithlib.api.util.Gunsmith;
 import mod.chloeprime.gunsmithlib.common.internal.GunAttributeSyncState;
 import mod.chloeprime.gunsmithlib.common.util.GsHelper;
 import mod.chloeprime.gunsmithlib.common.util.InternalBulletCreateEvent;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -21,6 +25,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
@@ -70,6 +77,54 @@ public class MiscAttributeAdapter {
     public static double rpm(LivingEntity attacker) {
         var attribute = RPM.get();
         return attacker.getAttributeValue(attribute);
+    }
+
+    private static final List<AttributeModifier> AM_BUFFER_ADDITION = new ArrayList<>();
+    private static final List<AttributeModifier> AM_BUFFER_MUL_BASE = new ArrayList<>();
+    private static final List<AttributeModifier> AM_BUFFER_MUL_TOTAL = new ArrayList<>();
+
+    public static int ammoCapacity(int original, ItemStack gunItem) {
+        var isUsingInventoryAsMagazine = Gunsmith.getGunInfo(gunItem)
+                .map(gi -> gi.index().getGunData())
+                .filter(gunData -> gunData.getReloadData().getType() == FeedType.INVENTORY)
+                .isPresent();
+        if (isUsingInventoryAsMagazine) {
+            return original;
+        }
+
+        Attribute attribute = AMMO_CAPACITY.get();
+        Collection<AttributeModifier> modifiers = gunItem.getAttributeModifiers(EquipmentSlot.MAINHAND).get(attribute);
+
+        try {
+            for (var modifier : modifiers) {
+                switch (modifier.getOperation()) {
+                    case ADDITION -> AM_BUFFER_ADDITION.add(modifier);
+                    case MULTIPLY_BASE -> AM_BUFFER_MUL_BASE.add(modifier);
+                    case MULTIPLY_TOTAL -> AM_BUFFER_MUL_TOTAL.add(modifier);
+                }
+            }
+
+            double afterAddition = original;
+            for(var modifier : AM_BUFFER_ADDITION) {
+                afterAddition += modifier.getAmount();
+            }
+
+            double finalValue = afterAddition;
+            for(var modifier : AM_BUFFER_MUL_BASE) {
+                finalValue += afterAddition * modifier.getAmount();
+            }
+
+            for(var modifier : AM_BUFFER_MUL_TOTAL) {
+                finalValue *= 1.0D + modifier.getAmount();
+            }
+
+            return (int) Math.round(attribute.sanitizeValue(finalValue));
+        } finally {
+            AM_BUFFER_ADDITION.clear();
+            AM_BUFFER_MUL_BASE.clear();
+            AM_BUFFER_MUL_TOTAL.clear();
+        }
+
     }
 
     @SubscribeEvent

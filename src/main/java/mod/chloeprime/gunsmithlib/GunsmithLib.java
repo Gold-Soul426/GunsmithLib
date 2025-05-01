@@ -59,6 +59,7 @@ public class GunsmithLib {
         );
 
         public static final RegistryObject<Attribute> RPM = create("rpm", 300, 1, 1200, attribute -> attribute.setSyncable(true));
+        public static final RegistryObject<Attribute> AMMO_CAPACITY = create("ammo_capacity", 30, 0, Integer.MAX_VALUE);
 
 
         @SuppressWarnings("SameParameterValue")

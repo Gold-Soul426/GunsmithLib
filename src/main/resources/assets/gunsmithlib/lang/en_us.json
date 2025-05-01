@@ -9,5 +9,7 @@
   "attribute.name.gunsmithlib.horz_recoil.desc": "Scaling to Horizontal Recoil",
   "attribute.name.gunsmithlib.rpm": "RPM",
   "attribute.name.gunsmithlib.rpm.desc": "Rounds per minute",
+  "attribute.name.gunsmithlib.ammo_capacity": "Ammo Capacity",
+  "attribute.name.gunsmithlib.ammo_capacity.desc": "Max ammo count in your magazine, does not consider bullets in barrel",
   "effect.gunsmithlib.crossfire": "Crossfire"
 }

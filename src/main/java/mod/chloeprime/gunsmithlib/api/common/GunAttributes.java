@@ -30,4 +30,10 @@ public class GunAttributes {
      * @since 2.1.0
      */
     public static final RegistryObject<Attribute> RPM = GunsmithLib.Attributes.RPM;
+
+    /**
+     * 弹匣容量，只有放在物品上的时候有效
+     * @since 3.1.0
+     */
+    public static final RegistryObject<Attribute> AMMO_CAPACITY = GunsmithLib.Attributes.AMMO_CAPACITY;
 }
