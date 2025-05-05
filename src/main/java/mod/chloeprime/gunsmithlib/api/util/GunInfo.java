@@ -35,6 +35,23 @@ public record GunInfo(
         return mag + barrel;
     }
 
+    /**
+     * @since 3.2.0
+     */
+    public void setTotalAmmo(int value) {
+        if (index().getGunData().getBolt() == Bolt.OPEN_BOLT) {
+            gunItem.setCurrentAmmoCount(gunStack, value);
+        } else {
+            if (value > 0) {
+                gunItem.setBulletInBarrel(gunStack, true);
+                gunItem.setCurrentAmmoCount(gunStack, value - 1);
+            } else {
+                gunItem.setBulletInBarrel(gunStack, false);
+                gunItem.setCurrentAmmoCount(gunStack, 0);
+            }
+        }
+    }
+
     public int getDummyAmmoAmount() {
         return gunItem().getDummyAmmoAmount(gunStack());
     }
