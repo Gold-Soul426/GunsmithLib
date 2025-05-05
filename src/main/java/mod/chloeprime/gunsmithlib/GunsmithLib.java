@@ -2,6 +2,7 @@ package mod.chloeprime.gunsmithlib;
 
 import com.mojang.logging.LogUtils;
 import mod.chloeprime.gunsmithlib.api.common.GunAttributes;
+import mod.chloeprime.gunsmithlib.api.common.GunLootFunctions;
 import mod.chloeprime.gunsmithlib.common.util.AttackDamageMobEffect;
 import mod.chloeprime.gunsmithlib.common.util.PercentBasedAttribute;
 import net.minecraft.world.effect.MobEffect;
@@ -87,5 +88,6 @@ public class GunsmithLib {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
+        event.enqueueWork(GunLootFunctions::init);
     }
 }
