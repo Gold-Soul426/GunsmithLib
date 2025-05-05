@@ -26,7 +26,7 @@ public class InitGunInfoFunction extends LootItemConditionalFunction {
     private final ResourceLocation gunId;
     private final NumberProvider ammo;
 
-    protected InitGunInfoFunction(
+    public InitGunInfoFunction(
             LootItemCondition[] conditions,
             ResourceLocation gunId,
             NumberProvider ammoCount) {
@@ -35,8 +35,24 @@ public class InitGunInfoFunction extends LootItemConditionalFunction {
         this.ammo = ammoCount;
     }
 
+    public static LootItemConditionalFunction.Builder<?> initGunInfo(ResourceLocation gunId) {
+        return initGunInfo(gunId, ConstantValue.exactly(0));
+    }
+
+    public static LootItemConditionalFunction.Builder<?> initGunInfo(ResourceLocation gunId, NumberProvider ammo) {
+        return simpleBuilder((conditions) -> new InitGunInfoFunction(conditions, gunId, ammo));
+    }
+
+    public ResourceLocation getGunId() {
+        return gunId;
+    }
+
+    public NumberProvider getInitialAmmoCount() {
+        return ammo;
+    }
+
     @Override
-    protected @Nonnull ItemStack run(ItemStack stack, LootContext context) {
+    public @Nonnull ItemStack run(ItemStack stack, LootContext context) {
         if (stack.getItem() instanceof IGun gunItem) {
             gunItem.setGunId(stack, this.gunId);
         }
@@ -53,14 +69,6 @@ public class InitGunInfoFunction extends LootItemConditionalFunction {
             }
         });
         return stack;
-    }
-
-    public static LootItemConditionalFunction.Builder<?> initGunInfo(ResourceLocation gunId) {
-        return initGunInfo(gunId, ConstantValue.exactly(0));
-    }
-
-    public static LootItemConditionalFunction.Builder<?> initGunInfo(ResourceLocation gunId, NumberProvider ammo) {
-        return simpleBuilder((conditions) -> new InitGunInfoFunction(conditions, gunId, ammo));
     }
 
     @Override

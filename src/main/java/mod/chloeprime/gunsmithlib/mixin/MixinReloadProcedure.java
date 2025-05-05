@@ -5,6 +5,7 @@ import com.tacz.guns.item.ModernKineticGunScriptAPI;
 import mod.chloeprime.gunsmithlib.common.util.GsHooks;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fml.loading.FMLLoader;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,6 +29,12 @@ public class MixinReloadProcedure {
         if (gun == null || kun == null || shooter == null) {
             return;
         }
-        GsHooks.onReloadFeed(kun, shooter, gun, !kun.hasBulletInBarrel(gun), () -> cir.setReturnValue(0));
+        try {
+            GsHooks.onReloadFeed(kun, shooter, gun, !kun.hasBulletInBarrel(gun), () -> cir.setReturnValue(0));
+        } catch (NoClassDefFoundError error) {
+            if (FMLLoader.isProduction()) {
+                throw error;
+            }
+        }
     }
 }
