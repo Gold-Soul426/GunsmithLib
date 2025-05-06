@@ -11,13 +11,17 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Optional;
 
 public class GsHelper {
+    /**
+     * @return 增益倍率，永远不会为 0
+     * @since 3.2.0
+     */
     public static double getBuffCoefficient(ResourceLocation gunId, boolean isMelee) {
         if (!isMelee) {
             return 1;
         }
         return TimelessAPI.getCommonGunIndex(gunId)
-                .map(index -> 1.0 / index.getGunData().getBulletData().getBulletAmount())
-                .filter(value -> !Double.isInfinite(value) && !Double.isNaN(value))
+                .map(index -> index.getGunData().getBulletData().getBulletAmount())
+                .map(shrapnel -> shrapnel == 0 ? 1 : 1.0 / Math.abs(shrapnel))
                 .orElse(1.0);
     }
 
