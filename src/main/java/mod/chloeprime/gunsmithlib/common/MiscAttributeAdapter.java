@@ -11,6 +11,7 @@ import mod.chloeprime.gunsmithlib.api.util.Gunsmith;
 import mod.chloeprime.gunsmithlib.common.internal.GunAttributeSyncState;
 import mod.chloeprime.gunsmithlib.common.util.GsHelper;
 import mod.chloeprime.gunsmithlib.common.util.InternalBulletCreateEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -51,7 +52,9 @@ public class MiscAttributeAdapter {
         var attribute = isMelee ? Attributes.ATTACK_DAMAGE : BULLET_DAMAGE.get();
         var oldDamage = event.getBaseAmount();
         var newDamage = GsHelper.getAttributeValueWithBase(attacker, attribute, oldDamage);
-        event.setBaseAmount((float) newDamage);
+        // 左键近战武器分散增益
+        var coefficient = GsHelper.getBuffCoefficient(event.getGunId(), isMelee);
+        event.setBaseAmount((float) Mth.lerp(coefficient, oldDamage, newDamage));
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
