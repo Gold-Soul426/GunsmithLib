@@ -22,11 +22,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
 @ParametersAreNonnullByDefault
-public class InitGunInfoFunction extends LootItemConditionalFunction {
+public class InitGunInfo extends LootItemConditionalFunction {
     private final ResourceLocation gunId;
     private final NumberProvider ammo;
 
-    public InitGunInfoFunction(
+    public InitGunInfo(
             LootItemCondition[] conditions,
             ResourceLocation gunId,
             NumberProvider ammoCount) {
@@ -40,7 +40,7 @@ public class InitGunInfoFunction extends LootItemConditionalFunction {
     }
 
     public static LootItemConditionalFunction.Builder<?> initGunInfo(ResourceLocation gunId, NumberProvider ammo) {
-        return simpleBuilder((conditions) -> new InitGunInfoFunction(conditions, gunId, ammo));
+        return simpleBuilder((conditions) -> new InitGunInfo(conditions, gunId, ammo));
     }
 
     public ResourceLocation getGunId() {
@@ -76,17 +76,17 @@ public class InitGunInfoFunction extends LootItemConditionalFunction {
         return Objects.requireNonNull(GunLootFunctions.INIT_GUN_INFO);
     }
 
-    public static class Serializer extends LootItemConditionalFunction.Serializer<InitGunInfoFunction> {
-        public void serialize(JsonObject json, InitGunInfoFunction instance, JsonSerializationContext serializationContext) {
+    public static class Serializer extends LootItemConditionalFunction.Serializer<InitGunInfo> {
+        public void serialize(JsonObject json, InitGunInfo instance, JsonSerializationContext serializationContext) {
             super.serialize(json, instance, serializationContext);
             json.addProperty("gun_id", instance.gunId.toString());
             json.add("ammo", serializationContext.serialize(instance.ammo));
         }
 
-        public @Nonnull InitGunInfoFunction deserialize(JsonObject json, JsonDeserializationContext deserializationContext, LootItemCondition[] conditions) {
+        public @Nonnull InitGunInfo deserialize(JsonObject json, JsonDeserializationContext deserializationContext, LootItemCondition[] conditions) {
             ResourceLocation gunId = new ResourceLocation(GsonHelper.getAsString(json, "gun_id"));
             NumberProvider ammoCount = GsonHelper.getAsObject(json, "ammo", ConstantValue.exactly(0), deserializationContext, NumberProvider.class);
-            return new InitGunInfoFunction(conditions, gunId, ammoCount);
+            return new InitGunInfo(conditions, gunId, ammoCount);
         }
     }
 }
