@@ -7,6 +7,7 @@ import com.tacz.guns.resource.modifier.custom.AmmoSpeedModifier;
 import com.tacz.guns.resource.modifier.custom.RpmModifier;
 import com.tacz.guns.resource.pojo.data.gun.FeedType;
 import com.tacz.guns.util.AttachmentDataUtils;
+import mod.chloeprime.gunsmithlib.Config;
 import mod.chloeprime.gunsmithlib.api.util.Gunsmith;
 import mod.chloeprime.gunsmithlib.common.internal.GunAttributeSyncState;
 import mod.chloeprime.gunsmithlib.common.util.GsHelper;
@@ -52,7 +53,9 @@ public class MiscAttributeAdapter {
         var coefficient = GsHelper.getBuffCoefficient(event.getGunId(), isMelee);
         var attribute = isMelee ? Attributes.ATTACK_DAMAGE : BULLET_DAMAGE.get();
         var oldDamage = event.getBaseAmount() / coefficient;
-        var newDamage = GsHelper.getAttributeValueWithBase(attacker, attribute, oldDamage);
+        var newDamage = (!isMelee && Config.USE_ATTACK_DAMAGE.get())
+                ? GsHelper.getAttributeValueWithBase(attacker, attribute, GsHelper.getAttributeValueWithBase(attacker, Attributes.ATTACK_DAMAGE, oldDamage))
+                : GsHelper.getAttributeValueWithBase(attacker, attribute, oldDamage);
         event.setBaseAmount((float) (newDamage * coefficient));
     }
 

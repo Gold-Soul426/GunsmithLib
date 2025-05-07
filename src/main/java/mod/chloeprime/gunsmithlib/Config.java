@@ -14,5 +14,12 @@ public class Config
             .comment("Enable calling hurt function with invokespecial on entities with a specific tag")
             .define("enable_special_hurt", true);
 
+    /**
+     * @since 3.2.1
+     */
+    public static final ForgeConfigSpec.BooleanValue USE_ATTACK_DAMAGE = BUILDER
+            .comment("If true, gun damage will be affect by `minecraft:generic.attack_damage` attribute, then use the result as base value for `gunsmithlib:bullet_damage` attribute")
+            .define("use_attack_damage", true);
+
     static final ForgeConfigSpec SPEC = BUILDER.build();
 }
