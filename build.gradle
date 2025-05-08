@@ -13,11 +13,13 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
+    id 'maven-publish'
 }
 
 apply plugin: 'org.spongepowered.mixin'
 
-mod_version = "${mod_version}+mc${minecraft_version}+tacz${tacz_version}"
+def isRelease = "${mod_version}".split('\\.').last().matches("[0-9]*")
+mod_version = "${mod_version}+mc${minecraft_version}+tacz${tacz_version}"+(isRelease ? ":" : "-SNAPSHOT")
 group = mod_group_id
 version = mod_version
 
@@ -239,4 +241,38 @@ tasks.named('jarJar') {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+tasks.withType(GenerateModuleMetadata) {
+    enabled = false
+}
+publishing {
+    repositories {
+        maven {
+            name = "Chloe_Maven"
+            url = isRelease
+                    ? "https://maven.chloeprime.cn:4080/releases/"
+                    : "https://maven.chloeprime.cn:4080/snapshots/"
+            authentication {
+                basic(BasicAuthentication)
+            }
+            credentials {
+                username "$CHLOE_MAVEN_USERNAME"
+                password "$CHLOE_MAVEN_PASSWORD"
+            }
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = group
+            artifactId = mod_id
+            version = version
+            pom.withXml {
+                def node = asNode()
+                if(node.dependencies.size() > 0)
+                    node.remove(node.dependencies) // Remove deps, as they are all mappings-dependent and/or forge
+            }
+            from components.java
+        }
+    }
 }
