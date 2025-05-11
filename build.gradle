@@ -19,7 +19,7 @@ plugins {
 apply plugin: 'org.spongepowered.mixin'
 
 def isRelease = "${mod_version}".split('\\.').last().matches("[0-9]*")
-mod_version = "${mod_version}+mc${minecraft_version}+tacz${tacz_version}"+(isRelease ? ":" : "-SNAPSHOT")
+mod_version = "${mod_version}+mc${minecraft_version}+tacz${tacz_version}"//+(isRelease ? "" : "-SNAPSHOT")
 group = mod_group_id
 version = mod_version
 
@@ -237,6 +237,7 @@ tasks.named('jar', Jar).configure {
 jarJar.enable()
 tasks.named('jarJar') {
     archiveClassifier = ''
+    finalizedBy 'reobfJarJar'
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -253,9 +254,6 @@ publishing {
             url = isRelease
                     ? "https://maven.chloeprime.cn:4080/releases/"
                     : "https://maven.chloeprime.cn:4080/snapshots/"
-            authentication {
-                basic(BasicAuthentication)
-            }
             credentials {
                 username "$CHLOE_MAVEN_USERNAME"
                 password "$CHLOE_MAVEN_PASSWORD"
@@ -273,6 +271,7 @@ publishing {
                     node.remove(node.dependencies) // Remove deps, as they are all mappings-dependent and/or forge
             }
             from components.java
+            jarJar.component(it)
         }
     }
 }

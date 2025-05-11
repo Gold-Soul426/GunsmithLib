@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity implements SpecialHurtable, GunAttributeSyncState {
-    @Shadow public abstract void setHealth(float p_21154_);
+    @Shadow public abstract void setHealth(float value);
 
     private @Unique boolean gunsmith$isInGunAttributeMode;
     private @Unique boolean gunsmith$isDoingSpecialHurtProcedure;
