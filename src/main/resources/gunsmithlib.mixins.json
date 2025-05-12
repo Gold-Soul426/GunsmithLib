@@ -10,10 +10,13 @@
     "MixinGunData",
     "MixinLivingEntity",
     "MixinMob",
+    "MixinModernKineticGunItem",
+    "MixinModernKineticGunScriptAPI",
     "MixinReloadProcedure",
     "client.ProjectileJoinWorldOwnerFixMixin"
   ],
   "client": [
+    "client.MixinGunHudOverlay",
     "client.RecoilAttributeMixin"
   ],
   "injectors": {

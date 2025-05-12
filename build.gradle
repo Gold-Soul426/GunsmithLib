@@ -144,6 +144,10 @@ repositories {
         }
     }
 
+    repositories {
+        maven { url 'https://modmaven.dev/' }
+    }
+
     maven {
         url 'https://maven.blamejared.com'
     }
@@ -179,6 +183,7 @@ dependencies {
         jarJar.ranged(it, "[0.4.1,)")
     }
 
+    runtimeOnly fg.deobf("mekanism:Mekanism:1.20.1-10.4.9.61")// core
     // 奇葩限伤/远程免疫怪测试
     runtimeOnly fg.deobf('curse.maven:farmers-delight-398521:5878214')
     runtimeOnly fg.deobf('curse.maven:youkais-homecoming-957437:5919029')

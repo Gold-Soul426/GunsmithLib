@@ -1,7 +1,12 @@
 package mod.chloeprime.gunsmithlib.mixin;
 
+import com.tacz.guns.api.TimelessAPI;
 import com.tacz.guns.api.item.gun.AbstractGunItem;
 import com.tacz.guns.item.ModernKineticGunScriptAPI;
+import com.tacz.guns.resource.index.CommonGunIndex;
+import com.tacz.guns.resource.pojo.data.gun.FeedType;
+import com.tacz.guns.resource.pojo.data.gun.GunData;
+import com.tacz.guns.resource.pojo.data.gun.GunReloadData;
 import mod.chloeprime.gunsmithlib.common.util.GsHooks;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +24,7 @@ public class MixinReloadProcedure {
     @Shadow private LivingEntity shooter;
 
     @Inject(
-            method = "consumeAmmoFromPlayer",
+            method = "putAmmoInMagazine",
             at = @At("HEAD"),
             cancellable = true)
     private void postFeedEvents(int amount, CallbackInfoReturnable<Integer> cir) {
@@ -27,6 +32,15 @@ public class MixinReloadProcedure {
         var kun = this.abstractGunItem;
         var shooter = this.shooter;
         if (gun == null || kun == null || shooter == null) {
+            return;
+        }
+        var useInvAmmo = TimelessAPI.getCommonGunIndex(kun.getGunId(gun))
+                .map(CommonGunIndex::getGunData)
+                .map(GunData::getReloadData)
+                .map(GunReloadData::getType)
+                .filter(reloadType -> reloadType == FeedType.INVENTORY)
+                .isPresent();
+        if (useInvAmmo) {
             return;
         }
         try {

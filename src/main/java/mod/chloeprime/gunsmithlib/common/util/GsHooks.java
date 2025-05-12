@@ -8,15 +8,18 @@ import net.minecraftforge.common.MinecraftForge;
 
 public class GsHooks {
     public static void onReloadFeed(IGun gun, LivingEntity shooter, ItemStack gunItem, boolean loadBarrel, Runnable canceller) {
-        var gunInfo = GsHelper.unpack(gun, gunItem);
-        var preEvent = gunInfo.map(gi -> new GunReloadFeedEvent.Pre(shooter, gi, loadBarrel));
-        var canceled = preEvent.filter(MinecraftForge.EVENT_BUS::post).isPresent();
+        var gunInfo = GsHelper.unpack(gun, gunItem).orElse(null);
+        if (gunInfo == null) {
+            return;
+        }
+        // pre
+        var canceled = MinecraftForge.EVENT_BUS.post(new GunReloadFeedEvent.Pre(shooter, gunInfo, loadBarrel));
         if (canceled) {
             canceller.run();
             return;
         }
 
-        var postEvent = gunInfo.map(gi -> new GunReloadFeedEvent.Post(shooter, gi, loadBarrel));
-        postEvent.ifPresent(MinecraftForge.EVENT_BUS::post);
+        // Post
+        MinecraftForge.EVENT_BUS.post(new GunReloadFeedEvent.Post(shooter, gunInfo, loadBarrel));
     }
 }

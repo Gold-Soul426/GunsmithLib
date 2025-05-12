@@ -5,6 +5,7 @@ import mod.chloeprime.gunsmithlib.api.common.GunAttributes;
 import mod.chloeprime.gunsmithlib.api.common.GunLootFunctions;
 import mod.chloeprime.gunsmithlib.common.util.AttackDamageMobEffect;
 import mod.chloeprime.gunsmithlib.common.util.PercentBasedAttribute;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -38,6 +39,10 @@ public class GunsmithLib {
         MobEffects.REGISTRY.register(bus);
         bus.addListener(this::commonSetup);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+    }
+
+    public static ResourceLocation loc(String path) {
+        return new ResourceLocation(MOD_ID, path);
     }
 
     public static class Attributes {

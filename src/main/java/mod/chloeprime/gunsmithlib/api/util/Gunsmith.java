@@ -4,6 +4,7 @@ import com.tacz.guns.api.TimelessAPI;
 import com.tacz.guns.api.entity.IGunOperator;
 import com.tacz.guns.api.item.IGun;
 import com.tacz.guns.api.item.attachment.AttachmentType;
+import mod.chloeprime.gunsmithlib.common.internal.MagicReloadImpl;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -21,6 +22,18 @@ public class Gunsmith {
         }
         var gunId = kun.getGunId(gun);
         return TimelessAPI.getCommonGunIndex(gunId).map(index -> new GunInfo(gun, kun, gunId, index));
+    }
+
+    /**
+     * Instantly reloads some ammo from inventory to inside the gun
+     * @param shooter shooter entity
+     * @param gun the gun stack
+     * @param reloadCount ammo count to find and load.
+     * @param options options.
+     * @return actually loaded ammo count.
+     */
+    public static int magicReload(LivingEntity shooter, ItemStack gun, int reloadCount, MagicReloadOptions... options) {
+        return MagicReloadImpl.magicReload(shooter, gun, reloadCount, options);
     }
 
     public static Vec3 getProximityMuzzlePos(LivingEntity shooter) {
@@ -50,5 +63,4 @@ public class Gunsmith {
         }
         return !info.gunItem().getAttachment(info.gunStack(), AttachmentType.SCOPE).isEmpty();
     }
-
 }
