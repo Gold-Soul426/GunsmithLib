@@ -135,12 +135,25 @@ mixin {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+    // CurseForge
     maven {
-        // Add curse maven to repositories
         name = "Curse Maven"
         url = "https://www.cursemaven.com"
         content {
             includeGroup "curse.maven"
+        }
+    }
+    // Modrinth
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        forRepositories(fg.repository) // Only add this if you're using ForgeGradle, otherwise remove this line
+        filter {
+            includeGroup "maven.modrinth"
         }
     }
 
@@ -183,7 +196,8 @@ dependencies {
         jarJar.ranged(it, "[0.4.1,)")
     }
 
-    runtimeOnly fg.deobf("mekanism:Mekanism:1.20.1-10.4.9.61")// core
+    runtimeOnly fg.deobf("mekanism:Mekanism:1.20.1-10.4.9.61")
+    runtimeOnly fg.deobf("maven.modrinth:plonk:V1OyyHVE")
     // 奇葩限伤/远程免疫怪测试
     runtimeOnly fg.deobf('curse.maven:farmers-delight-398521:5878214')
     runtimeOnly fg.deobf('curse.maven:youkais-homecoming-957437:5919029')
