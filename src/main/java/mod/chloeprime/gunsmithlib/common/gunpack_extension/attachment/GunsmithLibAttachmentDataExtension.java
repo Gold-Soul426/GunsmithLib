@@ -1,0 +1,20 @@
+package mod.chloeprime.gunsmithlib.common.gunpack_extension.attachment;
+
+import mod.chloeprime.gunsmithlib.common.gunpack_extension.ShieldData;
+
+/**
+ * @since 3.4.0
+ */
+@SuppressWarnings("unused")
+public class GunsmithLibAttachmentDataExtension {
+    /**
+     * 枪盾数据
+     *
+     * @since 3.4.0
+     */
+    private ShieldData shield;
+
+    public ShieldData getShieldData() {
+        return shield;
+    }
+}

@@ -1,11 +1,13 @@
 package mod.chloeprime.gunsmithlib;
 
 import com.mojang.logging.LogUtils;
+import com.tacz.guns.GunMod;
 import mod.chloeprime.gunsmithlib.api.common.GunAttributes;
 import mod.chloeprime.gunsmithlib.api.common.GunLootFunctions;
 import mod.chloeprime.gunsmithlib.common.util.AttackDamageMobEffect;
 import mod.chloeprime.gunsmithlib.common.util.PercentBasedAttribute;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -90,6 +92,11 @@ public class GunsmithLib {
         private static final DeferredRegister<MobEffect> REGISTRY = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, MOD_ID);
         public static final RegistryObject<MobEffect> GUN_DAMAGE = REGISTRY.register("crossfire", () -> new AttackDamageMobEffect(MobEffectCategory.BENEFICIAL, Color.LIGHT_GRAY, Config.CROSSFIRE_BUFF_POWER::get)
                 .addAttributeModifier(GunAttributes.BULLET_DAMAGE.get(), "57de873d-44fe-4d65-b1e7-371143916e9e", 0, AttributeModifier.Operation.MULTIPLY_TOTAL));
+    }
+
+    public static class SoundEvents {
+        public static final DeferredRegister<SoundEvent> REGISTRY = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, GunMod.MOD_ID);
+        public static final RegistryObject<SoundEvent> SHIELD_BLOCKS_BULLET = REGISTRY.register("shield_blocks_bullet", () -> SoundEvent.createVariableRangeEvent(loc( "shield_blocks_bullet")));
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {

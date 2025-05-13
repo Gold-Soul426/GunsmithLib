@@ -1,4 +1,4 @@
-package mod.chloeprime.gunsmithlib.common.gunpack_extension;
+package mod.chloeprime.gunsmithlib.common.gunpack_extension.gun;
 
 import mod.chloeprime.gunsmithlib.api.util.Gunsmith;
 import net.minecraft.core.particles.ParticleTypes;
@@ -31,7 +31,7 @@ public class OverheatFeedback {
         }
         // 没有配置启用则不启用
         var disabled = GunsmithLibGunDataExtension.of(gunInfo)
-                .filter(GunsmithLibGunDataExtension::enable_overheat_feedback)
+                .filter(GunsmithLibGunDataExtension::enableOverheatFeedback)
                 .isEmpty();
         if (disabled) {
             return;
@@ -60,7 +60,7 @@ public class OverheatFeedback {
         }
         // 没有配置启用则不启用
         var disabled = GunsmithLibGunDataExtension.of(gunInfo)
-                .filter(GunsmithLibGunDataExtension::enable_overheat_feedback)
+                .filter(GunsmithLibGunDataExtension::enableOverheatFeedback)
                 .isEmpty();
         if (disabled) {
             return;

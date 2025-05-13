@@ -11,5 +11,6 @@
   "attribute.name.gunsmithlib.rpm.desc": "武器的射速，即每分钟发射的子弹的数量",
   "attribute.name.gunsmithlib.ammo_capacity": "弹匣容量",
   "attribute.name.gunsmithlib.ammo_capacity.desc": "弹匣内的最大子弹数量，不包括膛内+1发",
-  "effect.gunsmithlib.crossfire": "交叉火力"
+  "effect.gunsmithlib.crossfire": "交叉火力",
+  "subtitle.gunsmithlib.shield_blocks_bullet": "子弹被枪盾格挡"
 }

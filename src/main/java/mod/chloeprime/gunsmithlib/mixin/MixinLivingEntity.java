@@ -2,6 +2,8 @@ package mod.chloeprime.gunsmithlib.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.tacz.guns.api.item.IGun;
+import mod.chloeprime.gunsmithlib.common.gunpack_extension.ShieldBehavior;
 import mod.chloeprime.gunsmithlib.common.internal.GunAttributeSyncState;
 import mod.chloeprime.gunsmithlib.common.util.FloatConsumer;
 import mod.chloeprime.gunsmithlib.common.util.HurtFunction1;
@@ -9,14 +11,46 @@ import mod.chloeprime.gunsmithlib.common.util.HurtFunction2;
 import mod.chloeprime.gunsmithlib.common.util.SpecialHurtable;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity implements SpecialHurtable, GunAttributeSyncState {
+    // 枪盾
+    @Inject(
+            method = "isDamageSourceBlocked",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isBlocking()Z"),
+            cancellable = true)
+    private void gunShield(DamageSource source, CallbackInfoReturnable<Boolean> cir) {
+        var self = (LivingEntity) (Object) this;
+        var sourcePos = ShieldBehavior.getBetterSourcePosition(source);
+        if (sourcePos == null) {
+            return;
+        }
+        ItemStack weapon = self.getMainHandItem();
+        if (ShieldBehavior.canBlockVanillaDamage(self, sourcePos, weapon)) {
+            cir.setReturnValue(true);
+        } else if (IGun.getIGunOrNull(weapon) != null) {
+            cir.setReturnValue(false);
+        }
+    }
+
+    @Inject(method = "isBlocking", at = @At("HEAD"), cancellable = true)
+    private void gunShield(CallbackInfoReturnable<Boolean> cir) {
+        var self = (LivingEntity) (Object) this;
+        var testSourcePos = self.getEyePosition().add(self.getLookAngle());
+        if (ShieldBehavior.canBlockVanillaDamage(self, testSourcePos, self.getMainHandItem())) {
+            cir.setReturnValue(true);
+        }
+    }
+
+    // 特殊伤害机制
     @Shadow public abstract void setHealth(float value);
 
     private @Unique boolean gunsmith$isInGunAttributeMode;

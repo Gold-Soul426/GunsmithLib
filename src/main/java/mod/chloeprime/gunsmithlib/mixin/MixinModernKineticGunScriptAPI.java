@@ -3,7 +3,7 @@ package mod.chloeprime.gunsmithlib.mixin;
 import com.tacz.guns.api.item.gun.AbstractGunItem;
 import com.tacz.guns.item.ModernKineticGunScriptAPI;
 import mod.chloeprime.gunsmithlib.api.common.GunScriptAPIExtension;
-import mod.chloeprime.gunsmithlib.common.gunpack_extension.OverheatFeedback;
+import mod.chloeprime.gunsmithlib.common.gunpack_extension.gun.OverheatFeedback;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;

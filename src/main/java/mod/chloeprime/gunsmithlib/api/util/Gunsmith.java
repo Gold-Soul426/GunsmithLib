@@ -2,6 +2,8 @@ package mod.chloeprime.gunsmithlib.api.util;
 
 import com.tacz.guns.api.TimelessAPI;
 import com.tacz.guns.api.entity.IGunOperator;
+import com.tacz.guns.api.item.IAmmo;
+import com.tacz.guns.api.item.IAttachment;
 import com.tacz.guns.api.item.IGun;
 import com.tacz.guns.api.item.attachment.AttachmentType;
 import mod.chloeprime.gunsmithlib.common.internal.MagicReloadImpl;
@@ -15,6 +17,9 @@ import java.util.Optional;
 import static mod.chloeprime.gunsmithlib.proxies.ClientProxy.*;
 
 public class Gunsmith {
+    /**
+     * @since 1.0.0
+     */
     public static Optional<GunInfo> getGunInfo(ItemStack gun) {
         var kun = IGun.getIGunOrNull(gun);
         if (kun == null) {
@@ -22,6 +27,30 @@ public class Gunsmith {
         }
         var gunId = kun.getGunId(gun);
         return TimelessAPI.getCommonGunIndex(gunId).map(index -> new GunInfo(gun, kun, gunId, index));
+    }
+
+    /**
+     * @since 3.4.0
+     */
+    public static Optional<AmmoInfo> getAmmoInfo(ItemStack ammo) {
+        var ait = IAmmo.getIAmmoOrNull(ammo);
+        if (ait == null) {
+            return Optional.empty();
+        }
+        var aid = ait.getAmmoId(ammo);
+        return TimelessAPI.getCommonAmmoIndex(aid).map(index -> new AmmoInfo(ammo, ait, aid, index));
+    }
+
+    /**
+     * @since 3.4.0
+     */
+    public static Optional<AttachmentInfo> getAttachmentInfo(ItemStack attachment) {
+        var ait = IAttachment.getIAttachmentOrNull(attachment);
+        if (ait == null) {
+            return Optional.empty();
+        }
+        var aid = ait.getAttachmentId(attachment);
+        return TimelessAPI.getCommonAttachmentIndex(aid).map(index -> new AttachmentInfo(attachment, ait, aid, index));
     }
 
     /**

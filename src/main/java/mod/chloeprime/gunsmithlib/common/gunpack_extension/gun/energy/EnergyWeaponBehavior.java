@@ -1,4 +1,4 @@
-package mod.chloeprime.gunsmithlib.common.gunpack_extension.energy;
+package mod.chloeprime.gunsmithlib.common.gunpack_extension.gun.energy;
 
 import com.tacz.guns.api.TimelessAPI;
 import com.tacz.guns.api.entity.IGunOperator;
@@ -11,8 +11,8 @@ import mod.chloeprime.gunsmithlib.GunsmithLib;
 import mod.chloeprime.gunsmithlib.api.common.GunReloadFeedEvent;
 import mod.chloeprime.gunsmithlib.api.util.GunInfo;
 import mod.chloeprime.gunsmithlib.api.util.Gunsmith;
-import mod.chloeprime.gunsmithlib.common.gunpack_extension.EnhancedGunData;
-import mod.chloeprime.gunsmithlib.common.gunpack_extension.GunsmithLibGunDataExtension;
+import mod.chloeprime.gunsmithlib.common.gunpack_extension.gun.EnhancedGunData;
+import mod.chloeprime.gunsmithlib.common.gunpack_extension.gun.GunsmithLibGunDataExtension;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;

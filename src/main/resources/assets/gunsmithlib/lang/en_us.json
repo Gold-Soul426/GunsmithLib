@@ -11,5 +11,6 @@
   "attribute.name.gunsmithlib.rpm.desc": "Rounds per minute",
   "attribute.name.gunsmithlib.ammo_capacity": "Ammo Capacity",
   "attribute.name.gunsmithlib.ammo_capacity.desc": "Max ammo count in your magazine, does not consider bullets in barrel",
-  "effect.gunsmithlib.crossfire": "Crossfire"
+  "effect.gunsmithlib.crossfire": "Crossfire",
+  "subtitle.gunsmithlib.shield_blocks_bullet": "Bullet blocked by shield"
 }

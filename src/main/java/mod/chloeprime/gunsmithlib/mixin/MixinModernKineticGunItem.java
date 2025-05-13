@@ -2,7 +2,7 @@ package mod.chloeprime.gunsmithlib.mixin;
 
 import com.tacz.guns.entity.shooter.ShooterDataHolder;
 import com.tacz.guns.item.ModernKineticGunItem;
-import mod.chloeprime.gunsmithlib.common.gunpack_extension.energy.EnergyWeaponData;
+import mod.chloeprime.gunsmithlib.common.gunpack_extension.gun.energy.EnergyWeaponData;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
