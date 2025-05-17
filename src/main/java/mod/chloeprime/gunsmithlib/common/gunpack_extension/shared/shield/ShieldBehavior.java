@@ -1,4 +1,4 @@
-package mod.chloeprime.gunsmithlib.common.gunpack_extension;
+package mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.shield;
 
 import com.tacz.guns.api.entity.IGunOperator;
 import com.tacz.guns.api.entity.ReloadState;

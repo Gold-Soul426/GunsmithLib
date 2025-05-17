@@ -1,4 +1,4 @@
-package mod.chloeprime.gunsmithlib.common.gunpack_extension;
+package mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.shield;
 
 import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.SerializedName;

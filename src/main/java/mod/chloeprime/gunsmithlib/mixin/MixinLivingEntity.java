@@ -3,7 +3,7 @@ package mod.chloeprime.gunsmithlib.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.tacz.guns.api.item.IGun;
-import mod.chloeprime.gunsmithlib.common.gunpack_extension.ShieldBehavior;
+import mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.shield.ShieldBehavior;
 import mod.chloeprime.gunsmithlib.common.internal.GunAttributeSyncState;
 import mod.chloeprime.gunsmithlib.common.util.FloatConsumer;
 import mod.chloeprime.gunsmithlib.common.util.HurtFunction1;

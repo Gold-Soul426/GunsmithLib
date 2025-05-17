@@ -1,6 +1,6 @@
 package mod.chloeprime.gunsmithlib.common.gunpack_extension.attachment;
 
-import mod.chloeprime.gunsmithlib.common.gunpack_extension.ShieldData;
+import mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.shield.ShieldData;
 
 /**
  * @since 3.4.0
