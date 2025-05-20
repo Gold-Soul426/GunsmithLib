@@ -1,7 +1,6 @@
 package mod.chloeprime.gunsmithlib;
 
 import com.mojang.logging.LogUtils;
-import com.tacz.guns.GunMod;
 import mod.chloeprime.gunsmithlib.api.common.GunAttributes;
 import mod.chloeprime.gunsmithlib.api.common.GunLootFunctions;
 import mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.fire_control.FireControlAttributes;
@@ -42,6 +41,7 @@ public class GunsmithLib {
         Attributes.REGISTRY.register(bus);
         FireControlAttributes.init(bus);
         MobEffects.REGISTRY.register(bus);
+        SoundEvents.REGISTRY.register(bus);
         bus.addListener(this::commonSetup);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
@@ -98,7 +98,7 @@ public class GunsmithLib {
     }
 
     public static class SoundEvents {
-        public static final DeferredRegister<SoundEvent> REGISTRY = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, GunMod.MOD_ID);
+        public static final DeferredRegister<SoundEvent> REGISTRY = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MOD_ID);
         public static final RegistryObject<SoundEvent> SHIELD_BLOCKS_BULLET = REGISTRY.register("shield_blocks_bullet", () -> SoundEvent.createVariableRangeEvent(loc( "shield_blocks_bullet")));
     }
 
