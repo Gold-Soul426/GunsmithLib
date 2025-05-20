@@ -54,3 +54,45 @@
   // ......
 }
 ```
+## 枪盾:
+```json5
+{
+  // ......
+  "gunsmithlib_extension": {
+    "shield": {
+      // 格挡原版伤害的角范围
+      "block_vanilla_damage_angle": 60,
+      // 格挡子弹的角范围
+      "block_bullet_damage_angle": 120,
+      // 格挡条件：
+      // when_aiming      瞄准时能够格挡
+      // when_not_aiming  没有瞄准时能够格挡
+      // always           总是能够格挡，无论是否处于瞄准状态
+      "condition": "when_aiming",
+      // 换弹时是否停用格挡。优先级高于 condition
+      "disable_shield_when_reloading": true
+    }
+  },
+  // ......
+}
+```
+## 火控（自瞄/制导）:
+```json5
+{
+  "gunsmithlib_extension": {
+    "fire_control": {
+      // 能够锁定目标的角范围，单位为角度（°）
+      "angular_range": 120,
+      // （可选）指定最大锁定距离，如留空则使用武器的优势射程作为最大锁定距离。
+      "range_override" : 500,
+      // （可选）制导系统的扭矩，单位为°/tick。
+      // 若留空，则子弹将在发射时直接指向目标。适用于高速动能子弹。
+      // 填入的值代表弹头每tick将速度矢量转向目标方向的最大角度变化量。
+      "torque": 6
+    }
+  },
+}
+```
+注1：在填入torque（即使用制导模式）的情况下，武器的弹速不宜超过20，否则表现出来会比较奇怪。
+<br><br>
+注2：该系统已自带TaCZ Fire Control Extension的功能（可读取使用了该模组的制导武器的配置），那个模组可以扔掉了）
