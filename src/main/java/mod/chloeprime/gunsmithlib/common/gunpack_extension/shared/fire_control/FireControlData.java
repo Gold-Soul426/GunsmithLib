@@ -10,6 +10,9 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.OptionalDouble;
 
+/**
+ * @since 3.5.0
+ */
 public final class FireControlData {
     /**
      * 锁定角范围
