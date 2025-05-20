@@ -2,6 +2,7 @@ package mod.chloeprime.gunsmithlib.common.gunpack_extension.gun;
 
 import mod.chloeprime.gunsmithlib.api.util.GunInfo;
 import mod.chloeprime.gunsmithlib.api.util.Gunsmith;
+import mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.fire_control.FireControlData;
 import mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.shield.ShieldData;
 import mod.chloeprime.gunsmithlib.common.gunpack_extension.gun.energy.EnergyWeaponData;
 import net.minecraft.world.item.ItemStack;
@@ -16,6 +17,7 @@ public final class GunsmithLibGunDataExtension {
      *
      * @since 3.3.0
      */
+    @SuppressWarnings("unused")
     private @Nullable EnergyWeaponData battery;
 
     /**
@@ -24,6 +26,7 @@ public final class GunsmithLibGunDataExtension {
      *
      * @since 3.3.0
      */
+    @SuppressWarnings("unused")
     private boolean enable_overheat_feedback;
 
     /**
@@ -31,7 +34,16 @@ public final class GunsmithLibGunDataExtension {
      *
      * @since 3.4.0
      */
-    private ShieldData shield;
+    @SuppressWarnings("unused")
+    private @Nullable ShieldData shield;
+
+    /**
+     * 制导数据
+     *
+     * @since 3.5.0
+     */
+    @SuppressWarnings("unused")
+    private @Nullable FireControlData fire_control;
 
     public static Optional<GunsmithLibGunDataExtension> of(ItemStack stack) {
         return Gunsmith.getGunInfo(stack).flatMap(GunsmithLibGunDataExtension::of);
@@ -41,8 +53,7 @@ public final class GunsmithLibGunDataExtension {
         return ((EnhancedGunData) gunInfo.index().getGunData()).gunsmith$getGunsmithLibExtension();
     }
 
-    @Nullable
-    public EnergyWeaponData battery() {
+    public @Nullable EnergyWeaponData battery() {
         return battery;
     }
 
@@ -50,7 +61,11 @@ public final class GunsmithLibGunDataExtension {
         return enable_overheat_feedback;
     }
 
-    public ShieldData getShieldData() {
+    public @Nullable ShieldData getShieldData() {
         return shield;
+    }
+
+    public @Nullable FireControlData getFireControlData() {
+        return fire_control;
     }
 }

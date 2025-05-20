@@ -11,6 +11,10 @@
   "attribute.name.gunsmithlib.rpm.desc": "武器的射速，即每分钟发射的子弹的数量",
   "attribute.name.gunsmithlib.ammo_capacity": "弹匣容量",
   "attribute.name.gunsmithlib.ammo_capacity.desc": "弹匣内的最大子弹数量，不包括膛内+1发",
+  "attribute.name.gunsmithlib.aim_lock_range": "最大锁定距离",
+  "attribute.name.gunsmithlib.aim_lock_range.desc": "具有锁定功能的武器的最大锁定距离，单位为格",
+  "attribute.name.gunsmithlib.aim_lock_angle": "最大锁定角度",
+  "attribute.name.gunsmithlib.aim_lock_angle.desc": "具有锁定功能的武器的最大锁定角度，单位为角度（°）",
   "effect.gunsmithlib.crossfire": "交叉火力",
   "subtitle.gunsmithlib.shield_blocks_bullet": "子弹被枪盾格挡"
 }

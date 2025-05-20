@@ -4,11 +4,13 @@ import com.tacz.guns.api.entity.IGunOperator;
 import com.tacz.guns.api.event.common.EntityHurtByGunEvent;
 import com.tacz.guns.api.event.common.GunDamageSourcePart;
 import com.tacz.guns.resource.modifier.custom.AmmoSpeedModifier;
+import com.tacz.guns.resource.modifier.custom.EffectiveRangeModifier;
 import com.tacz.guns.resource.modifier.custom.RpmModifier;
 import com.tacz.guns.resource.pojo.data.gun.FeedType;
 import com.tacz.guns.util.AttachmentDataUtils;
 import mod.chloeprime.gunsmithlib.Config;
 import mod.chloeprime.gunsmithlib.api.util.Gunsmith;
+import mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.fire_control.FireControlAttributes;
 import mod.chloeprime.gunsmithlib.common.internal.GunAttributeSyncState;
 import mod.chloeprime.gunsmithlib.common.util.GsHelper;
 import mod.chloeprime.gunsmithlib.common.util.InternalBulletCreateEvent;
@@ -156,23 +158,33 @@ public class MiscAttributeAdapter {
                     ? gun.index().getGunData().getRoundsPerMinute(gun.getFireMode())
                     : cache.<Integer>getCache(RpmModifier.ID);
 
+            double lockRange = cache != null && cache.getCache(EffectiveRangeModifier.ID) instanceof Number range
+                    ? range.doubleValue()
+                    : FireControlAttributes.AIM_LOCK_RANGE.get().getDefaultValue();
+
             setBaseValue(user, BULLET_DAMAGE.get(), damage);
             setBaseValue(user, BULLET_SPEED.get(), speed);
             setBaseValue(user, RPM.get(), rpm);
+            setBaseValue(user, FireControlAttributes.AIM_LOCK_RANGE.get(), lockRange);
         }, () -> {
             if (!syncState.gunsmith$isInGunMode()) {
                 return;
             }
             syncState.gunsmith$setInGunMode(false);
-            setBaseValue(user, BULLET_DAMAGE.get(), BULLET_DAMAGE.get().getDefaultValue());
-            setBaseValue(user, BULLET_SPEED.get(), BULLET_SPEED.get().getDefaultValue());
-            setBaseValue(user, RPM.get(), RPM.get().getDefaultValue());
+            resetBaseValue(user, BULLET_DAMAGE.get());
+            resetBaseValue(user, BULLET_SPEED.get());
+            resetBaseValue(user, RPM.get());
+            resetBaseValue(user, FireControlAttributes.AIM_LOCK_RANGE.get());
         });
     }
 
     private static void setBaseValue(LivingEntity owner, Attribute attribute, double value) {
         Optional.ofNullable(owner.getAttribute(attribute))
                 .ifPresent(ai -> ai.setBaseValue(value));
+    }
+
+    private static void resetBaseValue(LivingEntity owner, Attribute attribute) {
+        setBaseValue(owner, attribute, attribute.getDefaultValue());
     }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)

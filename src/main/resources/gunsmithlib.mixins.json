@@ -5,9 +5,11 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "gunsmithlib.refmap.json",
   "mixins": [
+    "LevelAccessor",
     "MixinAttachmentData",
     "MixinAttachmentDataUtils",
     "MixinBullet",
+    "MixinChunkMap",
     "MixinGunData",
     "MixinLivingEntity",
     "MixinMob",

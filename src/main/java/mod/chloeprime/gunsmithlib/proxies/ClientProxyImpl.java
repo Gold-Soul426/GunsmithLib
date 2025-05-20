@@ -2,14 +2,17 @@ package mod.chloeprime.gunsmithlib.proxies;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import mod.chloeprime.gunsmithlib.mixin.LevelAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.loading.FMLLoader;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.joml.Vector4f;
+
+import javax.annotation.Nullable;
+import java.util.UUID;
 
 class ClientProxyImpl {
     private static final Minecraft MC = Minecraft.getInstance();
@@ -42,5 +45,9 @@ class ClientProxyImpl {
         }
         transformed.div(transformed.w);
         return new Vec3(transformed.x, transformed.y, transformed.z);
+    }
+
+    static @Nullable Entity getEntityByUuid(Level level, UUID uuid) {
+        return ((LevelAccessor) level).invokeGetEntities().get(uuid);
     }
 }

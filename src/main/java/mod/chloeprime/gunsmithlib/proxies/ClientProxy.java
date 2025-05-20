@@ -1,16 +1,35 @@
 package mod.chloeprime.gunsmithlib.proxies;
 
+import mod.chloeprime.gunsmithlib.GunsmithLib;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.loading.FMLLoader;
-import org.jline.utils.Log;
+
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClientProxy {
     private static final boolean DEDICATED_SERVER = FMLLoader.getDist().isDedicatedServer();
+    private static final AtomicBoolean GET_ENTITY_LOGGED = new AtomicBoolean(false);
 
     public static LogicalSide sideOf(Level level) {
         return level.isClientSide ? LogicalSide.CLIENT : LogicalSide.SERVER;
+    }
+
+    public static Optional<Entity> getEntityByUuid(Level level, UUID uuid) {
+        if (level instanceof ServerLevel serverLevel) {
+            return Optional.ofNullable(serverLevel.getEntity(uuid));
+        } else if (!DEDICATED_SERVER) {
+            return Optional.ofNullable(ClientProxyImpl.getEntityByUuid(level, uuid));
+        }
+        if (!GET_ENTITY_LOGGED.getAndSet(true)) {
+            GunsmithLib.LOGGER.warn("Unknown dist in {}::{}", ClientProxy.class.getCanonicalName(), "getEntityByUuid", new IllegalStateException());
+        }
+        return Optional.empty();
     }
 
     public static Vec3 bobCompensation(LogicalSide side, Vec3 vec) {

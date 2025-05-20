@@ -4,8 +4,10 @@ import com.mojang.logging.LogUtils;
 import com.tacz.guns.GunMod;
 import mod.chloeprime.gunsmithlib.api.common.GunAttributes;
 import mod.chloeprime.gunsmithlib.api.common.GunLootFunctions;
+import mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.fire_control.FireControlAttributes;
 import mod.chloeprime.gunsmithlib.common.util.AttackDamageMobEffect;
 import mod.chloeprime.gunsmithlib.common.util.PercentBasedAttribute;
+import mod.chloeprime.gunsmithlib.network.ModNetwork;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
@@ -38,6 +40,7 @@ public class GunsmithLib {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 
         Attributes.REGISTRY.register(bus);
+        FireControlAttributes.init(bus);
         MobEffects.REGISTRY.register(bus);
         bus.addListener(this::commonSetup);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
@@ -100,6 +103,7 @@ public class GunsmithLib {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
+        event.enqueueWork(ModNetwork::init);
         event.enqueueWork(GunLootFunctions::init);
     }
 }
