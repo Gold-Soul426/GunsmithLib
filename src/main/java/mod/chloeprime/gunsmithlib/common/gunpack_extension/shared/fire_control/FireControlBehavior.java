@@ -37,11 +37,9 @@ public class FireControlBehavior {
 
         if (torque.isEmpty()) {
             // 让高速子弹直接指向目标
-            if (!bullet.level().isClientSide) {
-                var fixedTargetPos = fixTargetPos(bulletPos, aimResult, bulletSpeed);
-                var newBulletMotion = fixedTargetPos.subtract(bulletPos).normalize().scale(bulletSpeed);
-                bullet.setDeltaMovement(newBulletMotion);
-            }
+            var fixedTargetPos = fixTargetPos(bulletPos, aimResult, bulletSpeed);
+            var newBulletMotion = fixedTargetPos.subtract(bulletPos).normalize().scale(bulletSpeed);
+            bullet.setDeltaMovement(newBulletMotion);
         } else {
             // 让低速子弹缓慢转向目标
             HomingProjectileBehavior.onBulletCreate(event.getShooter(), bullet, torque.getAsDouble(), aimResult.entity());
