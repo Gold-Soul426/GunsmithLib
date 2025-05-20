@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = EntityKineticBullet.class)
 public abstract class MixinBullet extends Projectile {
     @WrapOperation(
-            method = "<clinit>", remap = false,
+            method = "<clinit>",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/EntityType$Builder;updateInterval(I)Lnet/minecraft/world/entity/EntityType$Builder;"))
     private static <T extends Entity> EntityType.Builder<T> adjustBulletUpdateIntervalToFixHomingBulletDrifting(
             EntityType.Builder<T> instance,
@@ -38,7 +38,7 @@ public abstract class MixinBullet extends Projectile {
 
     @WrapOperation(
             method = "tacAttackEntity", remap = false,
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+            at = @At(value = "INVOKE", remap = true, target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
     private boolean useSpecialHurtByTag(Entity victim, DamageSource source, float amount, Operation<Boolean> original) {
         if (!(victim instanceof SpecialHurtable injected)){
             return original.call(victim, source, amount);
