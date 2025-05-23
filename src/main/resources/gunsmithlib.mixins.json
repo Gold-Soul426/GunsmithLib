@@ -15,6 +15,7 @@
     "MixinMob",
     "MixinModernKineticGunItem",
     "MixinModernKineticGunScriptAPI",
+    "MixinPlayer",
     "MixinReloadProcedure",
     "client.ProjectileJoinWorldOwnerFixMixin"
   ],

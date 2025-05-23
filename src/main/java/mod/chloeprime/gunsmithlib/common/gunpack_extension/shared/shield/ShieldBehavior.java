@@ -8,16 +8,20 @@ import mod.chloeprime.gunsmithlib.GunsmithLib;
 import mod.chloeprime.gunsmithlib.api.util.Gunsmith;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.apache.commons.lang3.mutable.MutableDouble;
 
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * @since 3.4.0
+ */
 @Mod.EventBusSubscriber
 public class ShieldBehavior {
     /**
@@ -36,10 +40,40 @@ public class ShieldBehavior {
         return canBlockDamage(user, bulletPos, weapon, ShieldData::blockBulletDamageAngle);
     }
 
+    /**
+     * @since 3.6.0
+     */
+    public static Optional<ShieldData> getUsedShieldForBlockingVanillaDamage(
+            LivingEntity user, ItemStack weapon
+    ) {
+        return getUsedShieldFor(user, weapon, ShieldData::blockVanillaDamageAngle);
+    }
+
+    /**
+     * @since 3.6.0
+     */
+    public static Optional<ShieldData> getUsedShieldForBlockingBulletDamage(
+            LivingEntity user, ItemStack weapon
+    ) {
+        return getUsedShieldFor(user, weapon, ShieldData::blockBulletDamageAngle);
+    }
+
+    private static Optional<ShieldData> getUsedShieldFor(
+            LivingEntity user,
+            ItemStack weapon,
+            Function<ShieldData, Double> angleField) {
+        Predicate<ShieldData> condition = getConditionPredicate(user);
+        return getUsedShield(weapon, data -> condition.test(data) ? angleField.apply(data) : 0);
+    }
+
     private static boolean canBlockDamage(
             LivingEntity user, Vec3 sourcePos, ItemStack weapon,
             Function<ShieldData, Double> angleField
     ) {
+        // 冷却时完全不能格挡伤害
+        if (user instanceof Player player && player.getCooldowns().isOnCooldown(player.getMainHandItem().getItem())) {
+            return false;
+        }
         Predicate<ShieldData> condition = getConditionPredicate(user);
         // 单位为弧度
         var angle = getTotalAngle(weapon, data -> condition.test(data) ? angleField.apply(data) : 0);
@@ -78,19 +112,31 @@ public class ShieldBehavior {
         };
     }
 
-    private static double getTotalAngle(ItemStack weapon, Function<ShieldData, Double> field) {
+    private static Optional<ShieldData> getUsedShield(ItemStack weapon, Function<ShieldData, Double> field) {
         var gun = Gunsmith.getGunInfo(weapon).orElse(null);
         if (gun == null) {
-            return 0;
+            return Optional.empty();
         }
-        var result = new MutableDouble(ShieldData.fromGun(gun).map(field).orElse(0.0));
+        ShieldData result = ShieldData.fromGun(gun).orElse(null);
+        double maxAngle = result != null ? field.apply(result) : 0;
+
         for (var attachmentType : AttachmentType.values()) {
             ItemStack attachment = gun.gunItem().getAttachment(gun.gunStack(), attachmentType);
-            ShieldData.fromAttachment(attachment)
-                    .map(field)
-                    .ifPresent(angle -> result.setValue(Math.max(result.getValue(), angle)));
+            ShieldData data = ShieldData.fromAttachment(attachment).orElse(null);
+            if (data == null) {
+                continue;
+            }
+            var angle = field.apply(data);
+            if (angle > maxAngle) {
+                maxAngle = angle;
+                result = data;
+            }
         }
-        return result.getValue();
+        return Optional.ofNullable(result);
+    }
+
+    private static double getTotalAngle(ItemStack weapon, Function<ShieldData, Double> field) {
+        return getUsedShield(weapon, field).map(field).orElse(0.0);
     }
 
     public static Vec3 getBetterSourcePosition(DamageSource source) {

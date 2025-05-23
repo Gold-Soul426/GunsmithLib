@@ -51,11 +51,24 @@ public class ShieldData {
         ALWAYS
     }
 
+    /**
+     * 该枪盾什么时候可以格挡伤害
+     */
     @SuppressWarnings("FieldMayBeFinal")
     private @Nullable Condition condition = Condition.WHEN_AIMING;
 
+    /**
+     * 是否在装弹时停用枪盾，无论 {@link #condition} 如何。
+     */
     @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
     private boolean disable_shield_when_reloading = true;
+
+    /**
+     * 若为 true，则该枪盾无法被斧头破盾
+     * @since 3.6.0
+     */
+    @SuppressWarnings("unused")
+    private boolean undisableable_by_axes;
 
     // 下面是代码
 
@@ -81,6 +94,10 @@ public class ShieldData {
 
     public boolean disableShieldWhenReloading() {
         return disable_shield_when_reloading;
+    }
+
+    public boolean canBeDisabledByAxes() {
+        return !undisableable_by_axes;
     }
 
     public static Optional<ShieldData> fromGun(ItemStack stack) {
