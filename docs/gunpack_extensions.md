@@ -70,7 +70,10 @@
       // always           总是能够格挡，无论是否处于瞄准状态
       "condition": "when_aiming",
       // 换弹时是否停用格挡。优先级高于 condition
-      "disable_shield_when_reloading": true
+      "disable_shield_when_reloading": true,
+      // 3.6.0版本新增
+      // 如果为true，那么该武器无法被斧头破盾（默认false）
+      "undisableable_by_axes": true
     }
   },
   // ......
