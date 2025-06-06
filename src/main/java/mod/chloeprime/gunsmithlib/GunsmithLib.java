@@ -15,6 +15,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -103,7 +104,16 @@ public class GunsmithLib {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
+        event.enqueueWork(this::checkKnownIncompatibilities);
         event.enqueueWork(ModNetwork::init);
         event.enqueueWork(GunLootFunctions::init);
+    }
+
+    private void checkKnownIncompatibilities() {
+        if (ModList.get().isLoaded("tacz_fire_control_extension")) {
+            throw new UnsupportedOperationException("""
+                    This version of GunsmithLib contains the same functionality and is incompatible with TaCZ Fire Control Extension
+                    此版本的 GunsmithLib 已包括 TaCZ Fire Control Extension 的内容，且与该模组不兼容""");
+        }
     }
 }
