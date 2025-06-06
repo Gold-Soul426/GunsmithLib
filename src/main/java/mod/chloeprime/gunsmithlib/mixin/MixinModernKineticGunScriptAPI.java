@@ -3,8 +3,12 @@ package mod.chloeprime.gunsmithlib.mixin;
 import com.tacz.guns.api.item.gun.AbstractGunItem;
 import com.tacz.guns.item.ModernKineticGunScriptAPI;
 import mod.chloeprime.gunsmithlib.api.common.GunScriptAPIExtension;
+import mod.chloeprime.gunsmithlib.api.common.VanillaCooldownAPI;
 import mod.chloeprime.gunsmithlib.common.gunpack_extension.gun.OverheatFeedback;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,6 +23,26 @@ public class MixinModernKineticGunScriptAPI implements GunScriptAPIExtension {
         if (shooter != null) {
             OverheatFeedback.playCooldownSound(shooter);
         }
+    }
+
+    @Override
+    public float gunsmith_getCooldownSeconds() {
+        if (itemStack == null || !(shooter instanceof Player playerShooter)) {
+            return 0;
+        }
+        var gunItem = itemStack.getItem();
+        var cooldowns = playerShooter.getCooldowns();
+        return cooldowns.getCooldownPercent(gunItem, 1)
+                * VanillaCooldownAPI.gunsmithlib$getCooldownDuration(cooldowns, gunItem)
+                / 20;
+    }
+
+    @Override
+    public float gunsmith_getCooldownPercent() {
+        if (itemStack == null || !(shooter instanceof Player playerShooter)) {
+            return 0;
+        }
+        return playerShooter.getCooldowns().getCooldownPercent(itemStack.getItem(), 1);
     }
 
     @Inject(method = "handleShootHeat", at = @At(value = "INVOKE", target = "Lcom/tacz/guns/api/item/gun/AbstractGunItem;setOverheatLocked(Lnet/minecraft/world/item/ItemStack;Z)V"))

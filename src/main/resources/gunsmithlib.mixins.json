@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "gunsmithlib.refmap.json",
   "mixins": [
+    "ItemCooldownsAccessor",
     "LevelAccessor",
     "MixinAttachmentData",
     "MixinAttachmentDataUtils",
@@ -20,7 +21,10 @@
     "client.ProjectileJoinWorldOwnerFixMixin"
   ],
   "client": [
+    "client.MixinClientGamePacketListener",
+    "client.MixinGunAnimationStateContext",
     "client.MixinGunHudOverlay",
+    "client.MixinLuaAnimationConstant",
     "client.RecoilAttributeMixin"
   ],
   "injectors": {
