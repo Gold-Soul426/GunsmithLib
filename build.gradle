@@ -77,6 +77,8 @@ minecraft {
     runs {
         // applies to all the run configs below
         configureEach {
+            jvmArgs "-Xms6G"
+            jvmArgs "-Xmx6G"
             // Remove this if you're not using JBR
             jvmArgs "-XX:+AllowEnhancedClassRedefinition"
 

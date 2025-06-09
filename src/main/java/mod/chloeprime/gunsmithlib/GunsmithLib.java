@@ -52,26 +52,17 @@ public class GunsmithLib {
     }
 
     public static class Attributes {
+        private static final Consumer<Attribute> SET_SYNCED = attribute -> attribute.setSyncable(true);
         private static final DeferredRegister<Attribute> REGISTRY = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, MOD_ID);
         public static final RegistryObject<Attribute> BULLET_DAMAGE = create("bullet_damage", 0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
         public static final RegistryObject<Attribute> BULLET_SPEED = create("bullet_speed", 0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 
-        public static final RegistryObject<Attribute> H_RECOIL = REGISTRY.register("horz_recoil",
-                () -> new PercentBasedAttribute(
-                        createLangKey("horz_recoil"),
-                        1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY
-                ).setSyncable(true)
-        );
+        public static final RegistryObject<Attribute> H_RECOIL = createPercentBased("horz_recoil", 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, SET_SYNCED);
+        public static final RegistryObject<Attribute> V_RECOIL = createPercentBased("vert_recoil", 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, SET_SYNCED);;
 
-        public static final RegistryObject<Attribute> V_RECOIL = REGISTRY.register("vert_recoil",
-                () -> new PercentBasedAttribute(
-                        createLangKey("vert_recoil"),
-                        1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY
-                ).setSyncable(true)
-        );
-
-        public static final RegistryObject<Attribute> RPM = create("rpm", 300, 1, 1200, attribute -> attribute.setSyncable(true));
+        public static final RegistryObject<Attribute> RPM = create("rpm", 300, 1, 1200, SET_SYNCED);
         public static final RegistryObject<Attribute> AMMO_CAPACITY = create("ammo_capacity", 30, 0, Integer.MAX_VALUE);
+        public static final RegistryObject<Attribute> RELOAD_SPEED = createPercentBased("reload_speed", 1, 0, Double.POSITIVE_INFINITY, SET_SYNCED);
 
 
         @SuppressWarnings("SameParameterValue")
@@ -82,6 +73,14 @@ public class GunsmithLib {
         private static RegistryObject<Attribute> create(String name, double defaultValue, double min, double max, Consumer<Attribute> customizer) {
             return REGISTRY.register(name, () -> {
                 var attribute = new RangedAttribute(createLangKey(name), defaultValue, min, max);
+                customizer.accept(attribute);
+                return attribute;
+            });
+        }
+
+        private static RegistryObject<Attribute> createPercentBased(String name, double defaultValue, double min, double max, Consumer<Attribute> customizer) {
+            return REGISTRY.register(name, () -> {
+                var attribute = new PercentBasedAttribute(createLangKey(name), defaultValue, min, max);
                 customizer.accept(attribute);
                 return attribute;
             });

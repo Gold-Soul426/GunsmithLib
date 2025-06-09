@@ -21,6 +21,8 @@
     "client.ProjectileJoinWorldOwnerFixMixin"
   ],
   "client": [
+    "client.animation.MixinGunAnimationStateContext",
+    "client.animation.MixinObjectAnimationRunner",
     "client.MixinClientGamePacketListener",
     "client.MixinGunAnimationStateContext",
     "client.MixinGunHudOverlay",

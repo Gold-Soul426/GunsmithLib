@@ -36,4 +36,10 @@ public class GunAttributes {
      * @since 3.1.0
      */
     public static final RegistryObject<Attribute> AMMO_CAPACITY = GunsmithLib.Attributes.AMMO_CAPACITY;
+
+    /**
+     * 换弹速度
+     * @since 4.1.0
+     */
+    public static final RegistryObject<Attribute> RELOAD_SPEED = GunsmithLib.Attributes.RELOAD_SPEED;
 }

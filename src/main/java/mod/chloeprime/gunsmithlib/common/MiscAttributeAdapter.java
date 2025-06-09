@@ -196,7 +196,9 @@ public class MiscAttributeAdapter {
                     BULLET_SPEED,
                     V_RECOIL,
                     H_RECOIL,
-                    RPM));
+                    RPM,
+                    // AMMO_CAPACITY 弹匣容量只在物品上生效
+                    RELOAD_SPEED));
         }
 
         @SafeVarargs

@@ -1,14 +1,14 @@
 package mod.chloeprime.gunsmithlib.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.tacz.guns.api.item.gun.AbstractGunItem;
 import com.tacz.guns.item.ModernKineticGunScriptAPI;
+import mod.chloeprime.gunsmithlib.api.common.GunAttributes;
 import mod.chloeprime.gunsmithlib.api.common.GunScriptAPIExtension;
 import mod.chloeprime.gunsmithlib.api.common.VanillaCooldownAPI;
 import mod.chloeprime.gunsmithlib.common.gunpack_extension.gun.OverheatFeedback;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,6 +18,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = ModernKineticGunScriptAPI.class, remap = false)
 public class MixinModernKineticGunScriptAPI implements GunScriptAPIExtension {
+    // 换弹速度
+    @ModifyReturnValue(method = "getReloadTime", at = @At("RETURN"))
+    private long reloadSpeedScaler(long original) {
+        return shooter != null ? (long) (original * shooter.getAttributeValue(GunAttributes.RELOAD_SPEED.get())) : original;
+    }
+
+    // 过热反馈
     @Override
     public void gunsmith_playOverheatSound() {
         if (shooter != null) {
