@@ -11,6 +11,8 @@
   "attribute.name.gunsmithlib.rpm.desc": "Rounds per minute",
   "attribute.name.gunsmithlib.ammo_capacity": "Ammo Capacity",
   "attribute.name.gunsmithlib.ammo_capacity.desc": "Max ammo count in your magazine, does not consider bullets in barrel",
+  "attribute.name.gunsmithlib.reload_speed": "Reload Speed",
+  "attribute.name.gunsmithlib.reload_speed.desc": "Reload speed multiplier",
   "attribute.name.gunsmithlib.aim_lock_range": "Lock Range",
   "attribute.name.gunsmithlib.aim_lock_range.desc": "Max lock distance for weapons with fire control system. Useless on ordinary weapons without fire control capability",
   "attribute.name.gunsmithlib.aim_lock_angle": "Angular Lock Range",
