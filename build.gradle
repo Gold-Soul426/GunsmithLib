@@ -79,8 +79,8 @@ minecraft {
         configureEach {
             jvmArgs "-Xms6G"
             jvmArgs "-Xmx6G"
-            // Remove this if you're not using JBR
             jvmArgs "-XX:+AllowEnhancedClassRedefinition"
+            jvmArgs "-XX:+IgnoreUnrecognizedVMOptions"
 
             workingDirectory project.file('run')
 
