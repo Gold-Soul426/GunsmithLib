@@ -12,6 +12,7 @@
     "MixinBullet",
     "MixinChunkMap",
     "MixinGunData",
+    "MixinItemStack",
     "MixinLivingEntity",
     "MixinMob",
     "MixinModernKineticGunItem",
@@ -21,13 +22,13 @@
     "client.ProjectileJoinWorldOwnerFixMixin"
   ],
   "client": [
-    "client.animation.MixinGunAnimationStateContext",
-    "client.animation.MixinObjectAnimationRunner",
     "client.MixinClientGamePacketListener",
     "client.MixinGunAnimationStateContext",
     "client.MixinGunHudOverlay",
     "client.MixinLuaAnimationConstant",
-    "client.RecoilAttributeMixin"
+    "client.RecoilAttributeMixin",
+    "client.animation.MixinGunAnimationStateContext",
+    "client.animation.MixinObjectAnimationRunner"
   ],
   "injectors": {
     "defaultRequire": 1

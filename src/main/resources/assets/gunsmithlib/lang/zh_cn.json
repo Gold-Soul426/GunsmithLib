@@ -17,6 +17,8 @@
   "attribute.name.gunsmithlib.aim_lock_range.desc": "具有锁定功能的武器的最大锁定距离，单位为格",
   "attribute.name.gunsmithlib.aim_lock_angle": "最大锁定角度",
   "attribute.name.gunsmithlib.aim_lock_angle.desc": "具有锁定功能的武器的最大锁定角度，单位为角度（°）",
+  "gunsmithlib.item.modifiers.attachment": "作为配件安装时：",
+
   "effect.gunsmithlib.crossfire": "交叉火力",
   "subtitle.gunsmithlib.shield_blocks_bullet": "子弹被枪盾格挡"
 }

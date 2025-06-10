@@ -1,12 +1,13 @@
 package mod.chloeprime.gunsmithlib.common.gunpack_extension.attachment;
 
+import mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.GunsmithLibSharedDataExtension;
 import mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.shield.ShieldData;
 
 /**
  * @since 3.4.0
  */
 @SuppressWarnings("unused")
-public class GunsmithLibAttachmentDataExtension {
+public class GunsmithLibAttachmentDataExtension extends GunsmithLibSharedDataExtension {
     /**
      * 枪盾数据
      *
