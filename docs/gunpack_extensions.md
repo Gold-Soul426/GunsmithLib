@@ -54,7 +54,7 @@
   // ......
 }
 ```
-## 枪盾:
+## 枪盾（支持枪械和配件）:
 ```json5
 {
   // ......
@@ -99,3 +99,32 @@
 注1：在填入torque（即使用制导模式）的情况下，武器的弹速不宜超过20，否则表现出来会比较奇怪。
 <br><br>
 注2：该系统已自带TaCZ Fire Control Extension的功能（可读取使用了该模组的制导武器的配置），那个模组可以扔掉了）
+
+## 属性修饰器：
+可以添加原版系统的attribute的修饰器，例如血上限，移动速度，护甲值等。<br>
+本模组也添加了一些属性，具体可翻阅源代码或/attribute指令的补全列表。
+```json5
+{
+  "gunsmithlib_extension": {
+    // 这是一个数组，意味着每个武器/配件支持多个attribute modifier
+    "attribute_modifiers": [
+      {
+        // 修饰器作用的属性
+        "attribute": "gunsmithlib:reload_speed",
+        // 修饰器id
+        "id": "afc5d1a9-0c04-4d9a-bb94-5979919043f6",
+        // 修饰器的名称。
+        // 在原版中没有作用，有些mod可能会显示这个字段。
+        // 可选
+        "name": "My Amazing Attachment",
+        // 修饰器的值
+        "amount": "0.5",
+        // 修饰器的运算模式
+        // 可选，默认为 ADDITION（加算）
+        "operation": "MULTIPLY_BASE"
+      }
+    ]
+  },
+}
+```
+另请参见：[Minecraft Wiki 上的属性系统介绍](https://zh.minecraft.wiki/w/%E5%B1%9E%E6%80%A7)
