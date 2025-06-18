@@ -1,7 +1,7 @@
 package mod.chloeprime.gunsmithlib.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import mod.chloeprime.gunsmithlib.common.GunAttachmentAttributeAggregator;
+import mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.attribute.GunAttachmentAttributeAggregator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;

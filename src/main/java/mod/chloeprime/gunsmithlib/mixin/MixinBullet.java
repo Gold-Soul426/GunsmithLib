@@ -4,6 +4,8 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.tacz.guns.entity.EntityKineticBullet;
 import mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.fire_control.HomingProjectileBehavior;
+import mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.potion_effect.PotionEffectData;
+import mod.chloeprime.gunsmithlib.common.internal.EnhancedKineticBullet;
 import mod.chloeprime.gunsmithlib.common.util.HurtFunction1;
 import mod.chloeprime.gunsmithlib.common.util.SpecialHurtable;
 import net.minecraft.world.damagesource.DamageSource;
@@ -12,12 +14,31 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.List;
+
 @Mixin(value = EntityKineticBullet.class)
-public abstract class MixinBullet extends Projectile {
+public abstract class MixinBullet extends Projectile implements EnhancedKineticBullet {
+    private @Unique List<PotionEffectData> gunsmithlib$effects = List.of();
+
+    // 药水效果
+
+    @Override
+    public List<PotionEffectData> gunsmithlib$getPotionEffects() {
+        return gunsmithlib$effects;
+    }
+
+    @Override
+    public void gunsmithlib$setPotionEffects(List<PotionEffectData> value) {
+        gunsmithlib$effects = value;
+    }
+
+    // 跟踪弹
+
     @WrapOperation(
             method = "<clinit>",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/EntityType$Builder;updateInterval(I)Lnet/minecraft/world/entity/EntityType$Builder;"))

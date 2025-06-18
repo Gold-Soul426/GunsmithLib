@@ -1,4 +1,4 @@
-package mod.chloeprime.gunsmithlib.common;
+package mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.attribute;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
