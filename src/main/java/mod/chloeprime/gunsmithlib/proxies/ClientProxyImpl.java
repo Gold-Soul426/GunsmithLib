@@ -3,6 +3,7 @@ package mod.chloeprime.gunsmithlib.proxies;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import mod.chloeprime.gunsmithlib.mixin.LevelAccessor;
+import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -19,6 +20,9 @@ class ClientProxyImpl {
     private static final PoseStack POSE = new PoseStack();
 
     static Vec3 bobCompensation(Vec3 original) {
+        if (MC.options.getCameraType() != CameraType.FIRST_PERSON || !MC.options.bobView().get()) {
+            return original;
+        }
         var player = MC.player;
         if (player == null) {
             return original;

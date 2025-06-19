@@ -66,6 +66,14 @@ public class Gunsmith {
     }
 
     public static Vec3 getProximityMuzzlePos(LivingEntity shooter) {
+        return getProximityMuzzlePos(shooter, shooter.getEyePosition());
+    }
+
+    public static Vec3 getProximityMuzzlePos(LivingEntity shooter, float partial) {
+        return getProximityMuzzlePos(shooter, shooter.getEyePosition(partial));
+    }
+
+    private static Vec3 getProximityMuzzlePos(LivingEntity shooter, Vec3 eyePosition) {
         var op = IGunOperator.fromLivingEntity(shooter);
         var adsProgress = op.getSynAimingProgress();
 
@@ -78,7 +86,7 @@ public class Gunsmith {
         var z = Mth.lerp(adsProgress, 0.8F, 0.6F);
 
         var offset = bobCompensation(sideOf(shooter.level()), new Vec3(x, y, z));
-        return shooter.getEyePosition().add(axisX.scale(offset.x).add(axisY.scale(offset.y)).add(axisZ.scale(offset.z)));
+        return eyePosition.add(axisX.scale(offset.x).add(axisY.scale(offset.y)).add(axisZ.scale(offset.z)));
     }
 
     private static final double EYE_TO_HAND_X = 6.0 / 16;
