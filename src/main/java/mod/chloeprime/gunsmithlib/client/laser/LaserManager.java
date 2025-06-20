@@ -1,5 +1,6 @@
 package mod.chloeprime.gunsmithlib.client.laser;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import mod.chloeprime.gunsmithlib.common.util.InternalBulletCreateEvent;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,10 +16,11 @@ import java.util.LinkedList;
 public class LaserManager {
     private static final Deque<LaserInstance> INSTANCES = new LinkedList<>();
     private static final boolean DEV_ENV = !FMLLoader.isProduction();
+    private static final boolean ENABLED = false;
 
     @SubscribeEvent
     public static void onClientShoot(InternalBulletCreateEvent eventWrapper) {
-        if (!DEV_ENV) {
+        if (!DEV_ENV || !ENABLED) {
             return;
         }
         var event = eventWrapper.getImpl();
@@ -50,8 +52,13 @@ public class LaserManager {
                 if (instance.type == LaserType.CONTINUOUS) {
                     instance.refresh(event.getPartialTick());
                 }
-                MagicLaserUtils.stickLaserToMuzzle(instance, event.getPartialTick());
-                MagicLaserUtils.render(instance, event.getCamera(), event.getPartialTick(), event.getPoseStack());
+                PoseStack pose = event.getPoseStack();
+                pose.pushPose();
+                {
+                    MagicLaserUtils.stickLaserToMuzzle(instance, event.getPartialTick(), pose);
+                    MagicLaserUtils.render(instance, event.getCamera(), event.getPartialTick(), pose);
+                }
+                pose.popPose();
             }
         }
     }

@@ -3,12 +3,14 @@ package mod.chloeprime.gunsmithlib.client.laser;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.lang.ref.WeakReference;
 import java.util.Optional;
 import java.util.Random;
 import java.util.random.RandomGenerator;
 
+@ApiStatus.Internal
 public class LaserInstance {
     public final LaserType type;
     public Vec3 hitLocation;

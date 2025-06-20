@@ -1,13 +1,16 @@
 package mod.chloeprime.gunsmithlib.client.laser;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.tacz.guns.api.TimelessAPI;
+import com.tacz.guns.client.model.BedrockGunModel;
+import com.tacz.guns.client.model.bedrock.BedrockPart;
+import com.tacz.guns.client.resource.GunDisplayInstance;
 import com.tacz.guns.entity.EntityKineticBullet;
 import com.tacz.guns.util.EntityUtil;
-import mod.chloeprime.gunsmithlib.GunsmithLib;
 import mod.chloeprime.gunsmithlib.api.util.Gunsmith;
 import mod.chloeprime.gunsmithlib.common.internal.MagicLaser;
-import mod.chloeprime.gunsmithlib.proxies.ClientProxy;
 import net.minecraft.client.Camera;
+import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -20,8 +23,7 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.mutable.MutableDouble;
 import org.apache.commons.lang3.mutable.MutableObject;
 
-import java.util.Comparator;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class MagicLaserUtils {
@@ -115,8 +117,13 @@ public class MagicLaserUtils {
     private static EntityHitResult mapResult(EntityKineticBullet.EntityResult result) {
         return new EntityHitResult(result.getEntity(), result.getHitPos());
     }
-
     public static void render(
+            LaserInstance instance, Camera camera, float partial, PoseStack pose
+    ) {
+        render0(instance, camera, partial, pose);
+    }
+
+    private static void render0(
             LaserInstance instance, Camera camera, float partial, PoseStack pose
     ) {
         MagicLaser marker = getInstance().orElse(null);
@@ -138,10 +145,54 @@ public class MagicLaserUtils {
         marker.endRendering();
     }
 
-    public static void stickLaserToMuzzle(LaserInstance instance, float partialTicks) {
+    public static void stickLaserToMuzzle(LaserInstance instance, float partialTicks, PoseStack poseStack) {
+        Entity shooter = instance.getShooter().orElse(null);
+        if (MC.options.getCameraType() == CameraType.FIRST_PERSON && MC.getCameraEntity() instanceof LivingEntity fpEntity && fpEntity == shooter) {
+            TimelessAPI
+                    .getGunDisplay(fpEntity.getMainHandItem())
+                    .ifPresent(gun -> stickLaserToMuzzleFPP(gun, poseStack));
+        } else {
+            stickLaserToMuzzleTPP(instance, partialTicks);
+        }
+    }
+
+    private static final Deque<BedrockPart> STACK_BUFFER = new ArrayDeque<>();
+    private static void stickLaserToMuzzleFPP(GunDisplayInstance index, PoseStack pose) {
+        if (index == null) {
+            return;
+        }
+        try {
+            STACK_BUFFER.clear();
+            BedrockGunModel model = index.getGunModel();
+            BedrockPart muzzle = Optional.ofNullable(model.getMuzzleFlashPosPath())
+                    .map(Collection::stream)
+                    .flatMap(Stream::findFirst)
+                    .orElse(null);
+            if (muzzle == null) {
+                return;
+            }
+
+            BedrockPart part = muzzle;
+            while (part != null && part != model.getRootNode()) {
+                STACK_BUFFER.push(part);
+                part = part.getParent();
+            }
+            while ((part = STACK_BUFFER.pop()) != null) {
+                part.translateAndRotateAndScale(pose);
+            }
+        } finally {
+            STACK_BUFFER.clear();
+        }
+    }
+
+    private static void stickLaserToMuzzleTPP(LaserInstance instance, float partialTicks) {
         var shooter = instance.getShooter().orElse(null);
         if (shooter instanceof LivingEntity shoter) {
             instance.startPos = Gunsmith.getProximityMuzzlePos(shoter, partialTicks);
         }
+    }
+
+    private static void getPreciseMuzzlePos(LivingEntity shooter) {
+
     }
 }
