@@ -62,7 +62,7 @@ public class GunsmithLib {
         public static final RegistryObject<Attribute> BULLET_SPEED = create("bullet_speed", 0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 
         public static final RegistryObject<Attribute> H_RECOIL = createPercentBased("horz_recoil", 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, SET_SYNCED);
-        public static final RegistryObject<Attribute> V_RECOIL = createPercentBased("vert_recoil", 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, SET_SYNCED);;
+        public static final RegistryObject<Attribute> V_RECOIL = createPercentBased("vert_recoil", 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, SET_SYNCED);
 
         public static final RegistryObject<Attribute> RPM = create("rpm", 300, 1, 1200, SET_SYNCED);
         public static final RegistryObject<Attribute> AMMO_CAPACITY = create("ammo_capacity", 30, 0, Integer.MAX_VALUE);
