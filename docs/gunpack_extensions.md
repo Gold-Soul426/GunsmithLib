@@ -127,4 +127,40 @@
   },
 }
 ```
+
+## 药水效果（支持枪械和配件）
+```json5
+{
+  "gunsmithlib_extension": {
+    "potion_effects": [
+      {
+        // 状态效果 id。
+        // 必填。
+        "effect_id": "minecraft:levitation",
+        // 状态效果持续时间，单位为 tick。
+        // 可选。默认为 1 秒。
+        "duration": 200,
+        // 状态效果等级，1 = 1级，2 = 2级。
+        // 可选，默认为 1
+        "level": 4,
+        // 如果为 true, 那么粒子效果会变淡，类似信标带来的状态效果的样子。
+        // 可选，默认为 false。
+        "is_ambient": false,
+        // 如果为 false, 那么会隐藏这个状态的粒子效果。
+        // 可选，默认为 true。
+        "visible": true,
+        // 如果为 false, 那么这个状态效果不会在客户端物品栏gui上显示。
+        // 可选，默认为 true。
+        "show_icon": true,
+        // 每次命中施加状态效果的概率。
+        // 可选，默认为 1。
+        "chance": 0.25,
+        // 状态效果的最大叠加等级，为 0 时则不叠加。
+        // 可选，默认为 0。
+        "max_stack_level": 6
+      }
+    ]
+  },
+}
+```
 另请参见：[Minecraft Wiki 上的属性系统介绍](https://zh.minecraft.wiki/w/%E5%B1%9E%E6%80%A7)
