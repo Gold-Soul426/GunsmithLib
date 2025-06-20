@@ -50,7 +50,7 @@ public class LaserManager {
                 iterator.remove();
             } else {
                 if (instance.type == LaserType.CONTINUOUS) {
-                    instance.refresh(event.getPartialTick());
+//                    instance.refresh(event.getPartialTick());
                 }
                 PoseStack pose = event.getPoseStack();
                 pose.pushPose();

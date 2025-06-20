@@ -3,15 +3,19 @@ package mod.chloeprime.gunsmithlib.client.laser;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import com.tacz.guns.api.TimelessAPI;
 import mod.chloeprime.gunsmithlib.GunsmithLib;
 import mod.chloeprime.gunsmithlib.common.internal.MagicLaser;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.CameraType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -54,6 +58,13 @@ public class MagicLaserRenderer<T extends MagicLaser> extends EntityRenderer<T> 
         var length = entity.getLength();
         poseStack.scale(scale, scale, length);
         poseStack.translate(0, -1.5, 0);
+
+        var MC = Minecraft.getInstance();
+        if (MC.options.getCameraType() == CameraType.FIRST_PERSON && MC.getCameraEntity() instanceof LivingEntity fpEntity && fpEntity == entity.getShooter()) {
+            TimelessAPI
+                    .getGunDisplay(fpEntity.getMainHandItem())
+                    .ifPresent(gun -> MagicLaserUtils.getPreciseMuzzleOffset(gun, poseStack));
+        }
 
         VertexConsumer consumer = buffer.getBuffer(model.renderType(getTextureLocation(entity)));
         model.renderToBuffer(poseStack, consumer, pPackedLight, OverlayTexture.NO_OVERLAY, alpha, alpha, alpha, 1);

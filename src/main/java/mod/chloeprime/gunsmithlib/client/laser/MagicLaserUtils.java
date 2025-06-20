@@ -1,7 +1,6 @@
 package mod.chloeprime.gunsmithlib.client.laser;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.tacz.guns.api.TimelessAPI;
 import com.tacz.guns.client.model.BedrockGunModel;
 import com.tacz.guns.client.model.bedrock.BedrockPart;
 import com.tacz.guns.client.resource.GunDisplayInstance;
@@ -148,41 +147,15 @@ public class MagicLaserUtils {
     public static void stickLaserToMuzzle(LaserInstance instance, float partialTicks, PoseStack poseStack) {
         Entity shooter = instance.getShooter().orElse(null);
         if (MC.options.getCameraType() == CameraType.FIRST_PERSON && MC.getCameraEntity() instanceof LivingEntity fpEntity && fpEntity == shooter) {
-            TimelessAPI
-                    .getGunDisplay(fpEntity.getMainHandItem())
-                    .ifPresent(gun -> stickLaserToMuzzleFPP(gun, poseStack));
+            stickLaserToMuzzleFPP(instance, partialTicks, fpEntity);
         } else {
             stickLaserToMuzzleTPP(instance, partialTicks);
         }
     }
 
-    private static final Deque<BedrockPart> STACK_BUFFER = new ArrayDeque<>();
-    private static void stickLaserToMuzzleFPP(GunDisplayInstance index, PoseStack pose) {
-        if (index == null) {
-            return;
-        }
-        try {
-            STACK_BUFFER.clear();
-            BedrockGunModel model = index.getGunModel();
-            BedrockPart muzzle = Optional.ofNullable(model.getMuzzleFlashPosPath())
-                    .map(Collection::stream)
-                    .flatMap(Stream::findFirst)
-                    .orElse(null);
-            if (muzzle == null) {
-                return;
-            }
-
-            BedrockPart part = muzzle;
-            while (part != null && part != model.getRootNode()) {
-                STACK_BUFFER.push(part);
-                part = part.getParent();
-            }
-            while ((part = STACK_BUFFER.pop()) != null) {
-                part.translateAndRotateAndScale(pose);
-            }
-        } finally {
-            STACK_BUFFER.clear();
-        }
+    static void stickLaserToMuzzleFPP(LaserInstance instance, float partial, LivingEntity fpEntity) {
+        instance.startPos = fpEntity.getPosition(partial);
+        instance.hitLocation = instance.startPos.add(100, 0, 0);
     }
 
     private static void stickLaserToMuzzleTPP(LaserInstance instance, float partialTicks) {
@@ -192,7 +165,15 @@ public class MagicLaserUtils {
         }
     }
 
-    private static void getPreciseMuzzlePos(LivingEntity shooter) {
-
+    static void getPreciseMuzzleOffset(GunDisplayInstance display, PoseStack pose) {
+        if (display == null) {
+            return;
+        }
+        BedrockGunModel model = display.getGunModel();
+        List<BedrockPart> muzzle = model.getMuzzleFlashPosPath();
+        if (muzzle == null) {
+            return;
+        }
+        muzzle.forEach(bone -> bone.translateAndRotateAndScale(pose));
     }
 }
