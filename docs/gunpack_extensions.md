@@ -111,7 +111,9 @@
       {
         // 修饰器作用的属性
         "attribute": "gunsmithlib:reload_speed",
-        // 修饰器id
+        // 修饰器id。
+        // 请使用 https://www.uuidgenerator.net/ 生成独特的 uuid，
+        // 你使用的 uuid 不应该与任何你看到的 uuid 相同，除非你明确知道这样做会导致什么后果。
         "id": "afc5d1a9-0c04-4d9a-bb94-5979919043f6",
         // 修饰器的名称。
         // 在原版中没有作用，有些mod可能会显示这个字段。
