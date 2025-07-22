@@ -16,6 +16,10 @@ public class RangefinderPapi implements Function<ItemStack, String> {
     private static final String FALLBACK = String.valueOf(0);
     private static final Minecraft MC = Minecraft.getInstance();
 
+    private long lastTick = -1;
+    private float lastPartialTick;
+    private String lastResult = FALLBACK;
+
     // 此方法仅在客户端每帧执行一次，所以无需担心会卡
     @Override
     public String apply(ItemStack stack) {
@@ -27,9 +31,16 @@ public class RangefinderPapi implements Function<ItemStack, String> {
         if (gun == null) {
             return FALLBACK;
         }
+        var now = shooter.level().getGameTime();
+        var partial = MC.getPartialTick();
+        if (lastTick == now && lastPartialTick == partial) {
+            return lastResult;
+        }
+        lastTick = now;
+        lastPartialTick = partial;
         double maxRange = GsHelper.getEstimatedMaxRange(shooter, shooter.getMainHandItem());
         double range = Rangefinder.clip(shooter, shooter.getEyePosition(), shooter.getLookAngle(), 0, maxRange).getLength();
-        return "%.2f".formatted(range);
+        return lastResult = "%.2f".formatted(range);
     }
 
     private RangefinderPapi() {
