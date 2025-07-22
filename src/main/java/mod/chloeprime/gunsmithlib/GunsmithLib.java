@@ -125,8 +125,12 @@ public class GunsmithLib {
     private void checkKnownIncompatibilities() {
         if (ModList.get().isLoaded("tacz_fire_control_extension")) {
             throw new UnsupportedOperationException("""
-                    This version of GunsmithLib contains the same functionality and is incompatible with TaCZ Fire Control Extension
-                    此版本的 GunsmithLib 已包括 TaCZ Fire Control Extension 的内容，且与该模组不兼容""");
+                    
+                    This version of GunsmithLib contains the same functionality and is incompatible with TaCZ Fire Control Extension.
+                    Please remove TaCZ Fire Control Extension, this will not break your game functionality.
+                    
+                    此版本的 GunsmithLib 已包括 TaCZ Fire Control Extension 的内容，且与该模组不兼容。
+                    请删除 TaCZ Fire Control Extension, 放心，这不会让火控功能失效。""");
         }
     }
 }
