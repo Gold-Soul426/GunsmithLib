@@ -5,7 +5,6 @@ import com.mojang.math.Axis;
 import mod.chloeprime.gunsmithlib.mixin.LevelAccessor;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -54,9 +53,5 @@ class ClientProxyImpl {
 
     static @Nullable Entity getEntityByUuid(Level level, UUID uuid) {
         return ((LevelAccessor) level).invokeGetEntities().get(uuid);
-    }
-
-    static void addTechnicalEntity(Level level, Entity entity) {
-        ((ClientLevel) level).putNonPlayerEntity(entity.getId(), entity);
     }
 }
