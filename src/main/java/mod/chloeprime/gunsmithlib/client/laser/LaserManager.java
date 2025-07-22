@@ -34,7 +34,7 @@ public class LaserManager {
             return;
         }
         MagicLaserUtils
-                .clip(LaserType.CONTINUOUS, event.getShooter(), event.getShooter().getEyePosition(), bulletVelocity.scale(1 / bulletSpeed), bulletSpeed * 50)
+                .clip(LaserType.PULSE, event.getShooter(), event.getShooter().getEyePosition(), bulletVelocity.scale(1 / bulletSpeed), bulletSpeed * 50)
                 .ifPresent(INSTANCES::add);
     }
 

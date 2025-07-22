@@ -1,4 +1,4 @@
-package mod.chloeprime.gunsmithlib.common.internal;
+package mod.chloeprime.gunsmithlib.common.entity;
 
 import mod.chloeprime.gunsmithlib.client.laser.LaserInstance;
 import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;

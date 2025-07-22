@@ -3,8 +3,9 @@ package mod.chloeprime.gunsmithlib;
 import com.mojang.logging.LogUtils;
 import mod.chloeprime.gunsmithlib.api.common.GunAttributes;
 import mod.chloeprime.gunsmithlib.api.common.GunLootFunctions;
+import mod.chloeprime.gunsmithlib.common.entity.RangefinderMarker;
 import mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.fire_control.FireControlAttributes;
-import mod.chloeprime.gunsmithlib.common.internal.MagicLaser;
+import mod.chloeprime.gunsmithlib.common.entity.MagicLaser;
 import mod.chloeprime.gunsmithlib.common.util.AttackDamageMobEffect;
 import mod.chloeprime.gunsmithlib.common.util.PercentBasedAttribute;
 import mod.chloeprime.gunsmithlib.network.ModNetwork;
@@ -82,6 +83,7 @@ public class GunsmithLib {
             });
         }
 
+        @SuppressWarnings("SameParameterValue")
         private static RegistryObject<Attribute> createPercentBased(String name, double defaultValue, double min, double max, Consumer<Attribute> customizer) {
             return REGISTRY.register(name, () -> {
                 var attribute = new PercentBasedAttribute(createLangKey(name), defaultValue, min, max);
@@ -109,12 +111,15 @@ public class GunsmithLib {
     public static class EntityTypes {
         private static final DeferredRegister<EntityType<?>> DFR = DeferredRegister.create(Registries.ENTITY_TYPE, MOD_ID);
         public static final RegistryObject<EntityType<MagicLaser>> MAGIC_LASER = DFR.register("magic_laser", () -> MagicLaser.TYPE);
+        public static final RegistryObject<EntityType<RangefinderMarker>> RANGEFINDER_MARKER = DFR.register("rangefinder_marker", () -> RangefinderMarker.TYPE);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-        event.enqueueWork(this::checkKnownIncompatibilities);
-        event.enqueueWork(ModNetwork::init);
-        event.enqueueWork(GunLootFunctions::init);
+        checkKnownIncompatibilities();
+        event.enqueueWork(() -> {
+            ModNetwork.init();
+            GunLootFunctions.init();
+        });
     }
 
     private void checkKnownIncompatibilities() {

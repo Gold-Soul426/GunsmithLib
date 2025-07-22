@@ -1,11 +1,12 @@
 package mod.chloeprime.gunsmithlib.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.tacz.guns.api.item.IGun;
 import com.tacz.guns.api.item.gun.AbstractGunItem;
 import com.tacz.guns.item.ModernKineticGunScriptAPI;
 import mod.chloeprime.gunsmithlib.api.common.GunAttributes;
-import mod.chloeprime.gunsmithlib.api.common.GunScriptAPIExtension;
 import mod.chloeprime.gunsmithlib.api.common.VanillaCooldownAPI;
+import mod.chloeprime.gunsmithlib.common.AbstractGunScriptAPIExtension;
 import mod.chloeprime.gunsmithlib.common.gunpack_extension.gun.OverheatFeedback;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -16,8 +17,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Optional;
+
 @Mixin(value = ModernKineticGunScriptAPI.class, remap = false)
-public class MixinModernKineticGunScriptAPI implements GunScriptAPIExtension {
+public class MixinModernKineticGunScriptAPI implements AbstractGunScriptAPIExtension {
     // 换弹速度
     @ModifyReturnValue(method = "getReloadTime", at = @At("RETURN"))
     private long reloadSpeedScaler(long original) {
@@ -72,4 +75,19 @@ public class MixinModernKineticGunScriptAPI implements GunScriptAPIExtension {
     @Shadow private AbstractGunItem abstractGunItem;
     @Shadow private ItemStack itemStack;
     @Shadow private LivingEntity shooter;
+
+    @Override
+    public ItemStack gunsmithlib$getCurrentItem() {
+        return itemStack;
+    }
+
+    @Override
+    public IGun gunsmithlib$getGunItemInterface() {
+        return abstractGunItem;
+    }
+
+    @Override
+    public Optional<LivingEntity> gunsmithlib$getShooter() {
+        return Optional.ofNullable(shooter);
+    }
 }

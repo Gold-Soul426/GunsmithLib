@@ -1,16 +1,21 @@
 package mod.chloeprime.gunsmithlib.mixin.client;
 
+import com.tacz.guns.api.item.IGun;
 import com.tacz.guns.client.animation.statemachine.GunAnimationStateContext;
-import mod.chloeprime.gunsmithlib.api.client.GunAnimationStateContextExtension;
 import mod.chloeprime.gunsmithlib.api.common.VanillaCooldownAPI;
+import mod.chloeprime.gunsmithlib.client.AbstractGunAnimationStateContextExtension;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import java.util.Optional;
+
 @Mixin(value = GunAnimationStateContext.class, remap = false)
-public class MixinGunAnimationStateContext implements GunAnimationStateContextExtension {
+public class MixinGunAnimationStateContext implements AbstractGunAnimationStateContextExtension {
     @Shadow private ItemStack currentGunItem;
+    @Shadow private IGun iGun;
 
     @Override
     public float gunsmith_getCooldownSeconds() {
@@ -40,5 +45,20 @@ public class MixinGunAnimationStateContext implements GunAnimationStateContextEx
             return 0;
         }
         return player.getCooldowns().getCooldownPercent(currentGunItem.getItem(), MC.getPartialTick());
+    }
+
+    @Override
+    public ItemStack gunsmithlib$getCurrentItem() {
+        return currentGunItem;
+    }
+
+    @Override
+    public IGun gunsmithlib$getGunItemInterface() {
+        return iGun;
+    }
+
+    @Override
+    public Optional<LivingEntity> gunsmithlib$getShooter() {
+        return Optional.ofNullable(Minecraft.getInstance().player);
     }
 }

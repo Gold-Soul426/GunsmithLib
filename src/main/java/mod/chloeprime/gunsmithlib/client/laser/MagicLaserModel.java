@@ -7,7 +7,7 @@ package mod.chloeprime.gunsmithlib.client.laser;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.chloeprime.gunsmithlib.GunsmithLib;
-import mod.chloeprime.gunsmithlib.common.internal.MagicLaser;
+import mod.chloeprime.gunsmithlib.common.entity.MagicLaser;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
