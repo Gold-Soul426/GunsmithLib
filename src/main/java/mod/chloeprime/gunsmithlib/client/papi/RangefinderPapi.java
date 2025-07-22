@@ -16,6 +16,7 @@ public class RangefinderPapi implements Function<ItemStack, String> {
     private static final String FALLBACK = String.valueOf(0);
     private static final Minecraft MC = Minecraft.getInstance();
 
+    // 此方法仅在客户端每帧执行一次，所以无需担心会卡
     @Override
     public String apply(ItemStack stack) {
         var shooter = MC.player;
