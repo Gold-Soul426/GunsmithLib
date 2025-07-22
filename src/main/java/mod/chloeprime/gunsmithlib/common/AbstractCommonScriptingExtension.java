@@ -21,17 +21,17 @@ public interface AbstractCommonScriptingExtension extends CommonScriptingExtensi
 
     @Override
     @SuppressWarnings("UnstableApiUsage")
-    default double getEstimatedRange() {
+    default double gunsmith_getEstimatedRange() {
         int pierce = gunsmithlib$getShooter()
                 .map(IGunOperator::fromLivingEntity)
                 .map(IGunOperator::getCacheProperty)
                 .map(cache -> cache.getCache(GunProperties.PIERCE))
                 .orElse(0);
-        return getEstimatedRange(pierce);
+        return gunsmith_getEstimatedRange(pierce);
     }
 
     @Override
-    default double getEstimatedRange(int pierce) {
+    default double gunsmith_getEstimatedRange(int pierce) {
         Entity shooter = gunsmithlib$getShooter().orElse(null);
         if (shooter == null) {
             return 0;

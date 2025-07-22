@@ -2,8 +2,8 @@ package mod.chloeprime.gunsmithlib.mixin.client;
 
 import com.tacz.guns.api.item.IGun;
 import com.tacz.guns.client.animation.statemachine.GunAnimationStateContext;
-import mod.chloeprime.gunsmithlib.api.common.VanillaCooldownAPI;
 import mod.chloeprime.gunsmithlib.client.AbstractGunAnimationStateContextExtension;
+import mod.chloeprime.gunsmithlib.common.util.GsHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +30,7 @@ public class MixinGunAnimationStateContext implements AbstractGunAnimationStateC
         var gunItem = currentGunItem.getItem();
         var cooldowns = player.getCooldowns();
         return cooldowns.getCooldownPercent(gunItem, MC.getPartialTick())
-                * VanillaCooldownAPI.gunsmithlib$getCooldownDuration(cooldowns, gunItem)
+                * GsHelper.getCooldownDuration(cooldowns, gunItem)
                 / 20;
     }
 

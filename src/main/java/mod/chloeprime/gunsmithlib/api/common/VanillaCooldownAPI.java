@@ -1,9 +1,8 @@
 package mod.chloeprime.gunsmithlib.api.common;
 
-import mod.chloeprime.gunsmithlib.mixin.ItemCooldownsAccessor;
+import mod.chloeprime.gunsmithlib.common.util.GsHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemCooldowns;
-import org.jetbrains.annotations.ApiStatus;
 
 /**
  * @since 3.7.0
@@ -22,12 +21,11 @@ public interface VanillaCooldownAPI {
      */
     float gunsmith_getCooldownPercent();
 
-    @ApiStatus.Internal
+    /**
+     * @deprecated 请使用 {@link GsHelper#getCooldownDuration}，枪包脚本中不应该使用这个方法
+     */
+    @Deprecated(since = "4.4.0", forRemoval = true)
     static float gunsmithlib$getCooldownDuration(ItemCooldowns cooldowns, Item item) {
-        var instance = ((ItemCooldownsAccessor) cooldowns).getCooldowns().get(item);
-        if (instance == null) {
-            return 0;
-        }
-        return instance.endTime - instance.startTime;
+        return GsHelper.getCooldownDuration(cooldowns, item);
     }
 }

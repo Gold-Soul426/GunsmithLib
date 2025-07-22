@@ -5,9 +5,9 @@ import com.tacz.guns.api.item.IGun;
 import com.tacz.guns.api.item.gun.AbstractGunItem;
 import com.tacz.guns.item.ModernKineticGunScriptAPI;
 import mod.chloeprime.gunsmithlib.api.common.GunAttributes;
-import mod.chloeprime.gunsmithlib.api.common.VanillaCooldownAPI;
 import mod.chloeprime.gunsmithlib.common.AbstractGunScriptAPIExtension;
 import mod.chloeprime.gunsmithlib.common.gunpack_extension.gun.OverheatFeedback;
+import mod.chloeprime.gunsmithlib.common.util.GsHelper;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +43,7 @@ public class MixinModernKineticGunScriptAPI implements AbstractGunScriptAPIExten
         var gunItem = itemStack.getItem();
         var cooldowns = playerShooter.getCooldowns();
         return cooldowns.getCooldownPercent(gunItem, 1)
-                * VanillaCooldownAPI.gunsmithlib$getCooldownDuration(cooldowns, gunItem)
+                * GsHelper.getCooldownDuration(cooldowns, gunItem)
                 / 20;
     }
 

@@ -6,10 +6,13 @@ import com.tacz.guns.api.entity.IGunOperator;
 import com.tacz.guns.api.item.IGun;
 import mod.chloeprime.gunsmithlib.GunsmithLib;
 import mod.chloeprime.gunsmithlib.api.util.GunInfo;
+import mod.chloeprime.gunsmithlib.mixin.ItemCooldownsAccessor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.ModList;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
@@ -126,5 +129,13 @@ public class GsHelper {
                     return speed * life;
                 })
                 .orElse(0F);
+    }
+
+    public static float getCooldownDuration(ItemCooldowns cooldowns, Item item) {
+        var instance = ((ItemCooldownsAccessor) cooldowns).getCooldowns().get(item);
+        if (instance == null) {
+            return 0;
+        }
+        return instance.endTime - instance.startTime;
     }
 }
