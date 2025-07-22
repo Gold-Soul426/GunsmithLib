@@ -11,8 +11,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 @ApiStatus.Internal
@@ -45,25 +43,7 @@ public interface AbstractCommonScriptingExtension extends CommonScriptingExtensi
             return 0;
         }
 
-        double range = getEstimatedMaxRange(shooter, gunStack, gunItem);
+        double range = GsHelper.getEstimatedMaxRange(shooter, gunStack, gunItem);
         return Rangefinder.clip(shooter, shooter.getEyePosition(), shooter.getLookAngle(), pierce, range).getLength();
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    static double getEstimatedMaxRange(@Nullable Entity entity, @Nonnull ItemStack gunStack, @Nonnull IGun gunItem) {
-        if (!(entity instanceof LivingEntity shooter)) {
-            return 0;
-        }
-        var gi = GsHelper.unpack(gunItem, gunStack).orElse(null);
-        if (gi == null) {
-            return 0;
-        }
-        return Optional.ofNullable(IGunOperator.fromLivingEntity(shooter).getCacheProperty())
-                .map(cache -> {
-                    float speed = cache.getCache(GunProperties.AMMO_SPEED);
-                    float life = gi.index().getBulletData().getLifeSecond();
-                    return speed * life;
-                })
-                .orElse(0F);
     }
 }

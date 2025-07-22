@@ -1,10 +1,13 @@
 package mod.chloeprime.gunsmithlib.common.util;
 
+import com.tacz.guns.api.GunProperties;
 import com.tacz.guns.api.TimelessAPI;
+import com.tacz.guns.api.entity.IGunOperator;
 import com.tacz.guns.api.item.IGun;
 import mod.chloeprime.gunsmithlib.GunsmithLib;
 import mod.chloeprime.gunsmithlib.api.util.GunInfo;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.ItemStack;
@@ -12,6 +15,8 @@ import net.minecraftforge.fml.ModList;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -96,4 +101,30 @@ public class GsHelper {
 
     private static int[] version = null;
     private GsHelper() {}
+
+    public static double getEstimatedMaxRange(@Nullable Entity entity, @Nonnull ItemStack gunStack) {
+        IGun gunItem = IGun.getIGunOrNull(gunStack);
+        if (gunItem == null) {
+            return 0;
+        }
+        return getEstimatedMaxRange(entity, gunStack, gunItem);
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static double getEstimatedMaxRange(@Nullable Entity entity, @Nonnull ItemStack gunStack, @Nonnull IGun gunItem) {
+        if (!(entity instanceof LivingEntity shooter)) {
+            return 0;
+        }
+        var gi = unpack(gunItem, gunStack).orElse(null);
+        if (gi == null) {
+            return 0;
+        }
+        return Optional.ofNullable(IGunOperator.fromLivingEntity(shooter).getCacheProperty())
+                .map(cache -> {
+                    float speed = cache.getCache(GunProperties.AMMO_SPEED);
+                    float life = gi.index().getBulletData().getLifeSecond();
+                    return speed * life;
+                })
+                .orElse(0F);
+    }
 }

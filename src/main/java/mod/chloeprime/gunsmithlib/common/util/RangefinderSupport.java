@@ -40,9 +40,9 @@ public class RangefinderSupport {
         var marker = Objects.requireNonNull(markerRef.getValue());
         marker.setOwner(shooter);
         marker.setPos(shooter.getEyePosition());
-        if (!marker.isAddedToWorld()) {
-            level.addFreshEntity(marker);
-        }
+//        if (!marker.isAddedToWorld()) {
+//            ClientProxy.addTechnicalEntity(level, marker);
+//        }
         return marker;
     }
 

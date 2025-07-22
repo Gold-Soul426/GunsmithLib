@@ -20,7 +20,6 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class Rangefinder {
-
     public interface Result {
         double getLength();
 
@@ -121,6 +120,7 @@ public class Rangefinder {
 
     private static Optional<Stream<EntityHitResult>> clipEntities(Projectile projectile, Entity shooter, Vec3 from, Vec3 to, int limit) {
         projectile.setPos(from);
+        projectile.setDeltaMovement(to.subtract(from));
         if (limit == 1) {
             return Optional.ofNullable(EntityUtil.findEntityOnPath(projectile, from, to))
                     .map(Rangefinder::mapResult)

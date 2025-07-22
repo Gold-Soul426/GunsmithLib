@@ -32,6 +32,14 @@ public class ClientProxy {
         return Optional.empty();
     }
 
+    public static void addTechnicalEntity(Level level, Entity entity) {
+        if (level.isClientSide && !DEDICATED_SERVER) {
+            ClientProxyImpl.addTechnicalEntity(level, entity);
+        } else {
+            level.addFreshEntity(entity);
+        }
+    }
+
     public static Vec3 bobCompensation(LogicalSide side, Vec3 vec) {
         if (DEDICATED_SERVER || side.isServer()) {
             return vec;
