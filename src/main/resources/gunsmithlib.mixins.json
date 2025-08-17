@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "gunsmithlib.refmap.json",
   "mixins": [
+    "AlternativeArmorPierceFormulaMixin",
     "ItemCooldownsAccessor",
     "LevelAccessor",
     "MixinAttachmentData",

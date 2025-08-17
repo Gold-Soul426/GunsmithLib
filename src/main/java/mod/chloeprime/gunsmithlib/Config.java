@@ -21,5 +21,15 @@ public class Config
             .comment("If true, gun damage will be affect by `minecraft:generic.attack_damage` attribute, then use the result as base value for `gunsmithlib:bullet_damage` attribute")
             .define("use_attack_damage", true);
 
+    /**
+     * @since 4.4.2
+     */
+    public static final ForgeConfigSpec.BooleanValue ALTERNATIVE_ARMOR_PIERCING_FORMULA = BUILDER
+            .comment("""
+                    If true, guns' armor piercing mechanic will have only one hit with target armor reduced, instead of dealing two hits.
+                    This can fix the bug that Apotheosis's magic armor can reduce armor-piercing damage,
+                    and make Cataclysm's dynamic damage reduction work properly for guns.""")
+            .define("alt_ap_formula", true);
+
     static final ForgeConfigSpec SPEC = BUILDER.build();
 }
