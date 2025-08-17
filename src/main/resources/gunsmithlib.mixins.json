@@ -21,7 +21,9 @@
     "MixinModernKineticGunScriptAPI",
     "MixinPlayer",
     "MixinReloadProcedure",
-    "client.ProjectileJoinWorldOwnerFixMixin"
+    "client.ProjectileJoinWorldOwnerFixMixin",
+    "interactkey.StairBlockAccessor",
+    "interactkey.TacInteractKeyAutoInferenceMixin"
   ],
   "client": [
     "client.MixinClientGamePacketListener",

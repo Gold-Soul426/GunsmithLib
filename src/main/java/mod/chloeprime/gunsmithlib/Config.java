@@ -32,6 +32,17 @@ public class Config
                     
                     Added in version 4.4.2""")
             .define("alt_ap_formula", true);
+    /**
+     * @since 4.4.3
+     */
+    public static final ForgeConfigSpec.BooleanValue INTERACT_KEY_INFERENCING = BUILDER
+            .comment("""
+                    Auto inference whether a block or entity is interactable by its method overriding status.
+                    This is one of the core technologies in my mod TacInteractKey (https://www.curseforge.com/minecraft/mc-mods/tac-interact-key),
+                    which is missing in the interact key functionality of TaCZ itself.
+                    
+                    Added in version 4.4.3""")
+            .define("interact_key_inferencing", true);
 
     static final ForgeConfigSpec SPEC = BUILDER.build();
 }
