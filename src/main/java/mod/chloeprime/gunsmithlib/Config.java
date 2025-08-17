@@ -28,7 +28,9 @@ public class Config
             .comment("""
                     If true, guns' armor piercing mechanic will have only one hit with target armor reduced, instead of dealing two hits.
                     This can fix the bug that Apotheosis's magic armor can reduce armor-piercing damage,
-                    and make Cataclysm's dynamic damage reduction work properly for guns.""")
+                    and make Cataclysm's dynamic damage reduction work properly for guns.
+                    
+                    Added in version 4.4.2""")
             .define("alt_ap_formula", true);
 
     static final ForgeConfigSpec SPEC = BUILDER.build();
