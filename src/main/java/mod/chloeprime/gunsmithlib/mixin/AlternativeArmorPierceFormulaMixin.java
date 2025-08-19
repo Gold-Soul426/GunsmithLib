@@ -25,16 +25,13 @@ public class AlternativeArmorPierceFormulaMixin {
 
     @WrapOperation(
             method = "tacAttackEntity",
-            at = @At(value = "INVOKE", remap = true, target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+            at = @At(value = "INVOKE", ordinal = 0, remap = true, target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
     private boolean altFormula(
             Entity target, DamageSource source, float originalAmount, Operation<Boolean> original,
-            EntityKineticBullet.MaybeMultipartEntity parts, float fullDamageOfThisHit, Pair<DamageSource, DamageSource> sources) {
+            EntityKineticBullet.MaybeMultipartEntity parts, float fullDamageOfThisHit, Pair<DamageSource, DamageSource> sources
+    ) {
         if (!Config.ALTERNATIVE_ARMOR_PIERCING_FORMULA.get()) {
             return original.call(target, source, originalAmount);
-        }
-        // 取消穿甲段伤害
-        if (source == sources.getRight()) {
-            return false;
         }
         // 打中非生物，不计算穿甲
         if (!(target instanceof LivingEntity victim)) {
@@ -59,6 +56,23 @@ public class AlternativeArmorPierceFormulaMixin {
             if (tough != null) {
                 tough.removeModifier(modifier);
             }
+        }
+    }
+
+    /**
+     * 取消穿甲段伤害
+     */
+    @WrapOperation(
+            method = "tacAttackEntity",
+            at = @At(value = "INVOKE", ordinal = 1, remap = true, target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+    private boolean cancelApPartDamage(
+            Entity target, DamageSource source, float originalAmount, Operation<Boolean> original,
+            EntityKineticBullet.MaybeMultipartEntity parts, float fullDamageOfThisHit, Pair<DamageSource, DamageSource> sources
+    ) {
+        if (Config.ALTERNATIVE_ARMOR_PIERCING_FORMULA.get()) {
+            return false;
+        } else {
+            return original.call(target, source, originalAmount);
         }
     }
 }
