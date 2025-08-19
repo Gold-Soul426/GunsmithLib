@@ -9,8 +9,10 @@ import mod.chloeprime.gunsmithlib.api.util.GunInfo;
 import mod.chloeprime.gunsmithlib.mixin.ItemCooldownsAccessor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.ItemStack;
@@ -22,10 +24,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Supplier;
 
 public class GsHelper {
     /**
@@ -103,7 +103,9 @@ public class GsHelper {
     }
 
     private static int[] version = null;
-    private GsHelper() {}
+
+    private GsHelper() {
+    }
 
     public static double getEstimatedMaxRange(@Nullable Entity entity, @Nonnull ItemStack gunStack) {
         IGun gunItem = IGun.getIGunOrNull(gunStack);
@@ -137,5 +139,58 @@ public class GsHelper {
             return 0;
         }
         return instance.endTime - instance.startTime;
+    }
+
+    public record AttributeEvaluatorBuffer(
+            List<AttributeModifier> addition,
+            List<AttributeModifier> mulBase,
+            List<AttributeModifier> mulTotal
+    ) {
+        public AttributeEvaluatorBuffer() {
+            this(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        }
+    }
+
+    private static final ThreadLocal<AttributeEvaluatorBuffer> BUFFER_BY_THREAD = ThreadLocal.withInitial(AttributeEvaluatorBuffer::new);
+
+    public static double evaluateItemAttribute(
+            ItemStack item, Supplier<Attribute> attributeHolder, double baseValue
+    ) {
+        var attribute = attributeHolder.get();
+        var modifiers = item.getAttributeModifiers(EquipmentSlot.MAINHAND).get(attribute);
+        var buffer = BUFFER_BY_THREAD.get();
+
+        try {
+            for (var modifier : modifiers) {
+                if (modifier == null) {
+                    continue;
+                }
+                switch (modifier.getOperation()) {
+                    case ADDITION -> buffer.addition().add(modifier);
+                    case MULTIPLY_BASE -> buffer.mulBase().add(modifier);
+                    case MULTIPLY_TOTAL -> buffer.mulTotal().add(modifier);
+                }
+            }
+
+            double afterAddition = baseValue;
+            for(var modifier : buffer.addition()) {
+                afterAddition += modifier.getAmount();
+            }
+
+            double finalValue = afterAddition;
+            for(var modifier : buffer.mulBase()) {
+                finalValue += afterAddition * modifier.getAmount();
+            }
+
+            for(var modifier : buffer.mulTotal()) {
+                finalValue *= 1.0D + modifier.getAmount();
+            }
+
+            return attribute.sanitizeValue(finalValue);
+        } finally {
+            buffer.addition().clear();
+            buffer.mulBase().clear();
+            buffer.mulTotal().clear();
+        }
     }
 }
