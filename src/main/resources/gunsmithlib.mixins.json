@@ -27,6 +27,7 @@
   ],
   "client": [
     "client.MixinClientGamePacketListener",
+    "client.MixinClientGunTooltip",
     "client.MixinGunAnimationStateContext",
     "client.MixinGunHudOverlay",
     "client.MixinLuaAnimationConstant",
