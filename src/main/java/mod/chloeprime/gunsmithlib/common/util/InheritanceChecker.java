@@ -1,7 +1,13 @@
 package mod.chloeprime.gunsmithlib.common.util;
 
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
+
 import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class InheritanceChecker<T> {
     public InheritanceChecker(Class<T> baseType, String methodName, Class<?>... paramTypes) {
@@ -19,15 +25,28 @@ public class InheritanceChecker<T> {
         return CACHE.get(typeToCheck);
     }
 
+    private static final Logger LOGGER = LogUtils.getLogger();
     private final Class<T> givenBaseType;
     private final String methodName;
     private final Class<?>[] paramTypes;
     private final Class<? super T> realBaseType;
+    private final Set<Class<?>> badClasses = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final ClassValue<Boolean> CACHE = new ClassValue<>() {
         @Override
         @SuppressWarnings("unchecked")
         protected Boolean computeValue(@Nonnull Class<?> type) {
-            return !realBaseType.equals(getDeclareClass((Class<T>) type, methodName, paramTypes));
+            if (badClasses.contains(type)) {
+                return false;
+            }
+            try {
+                return !realBaseType.equals(getDeclareClass((Class<T>) type, methodName, paramTypes));
+            } catch (OutOfMemoryError oom) {
+                throw oom;
+            } catch (Throwable ex) {
+                LOGGER.warn("{} failed to inference method inheritance:", InheritanceChecker.this.getClass().getSimpleName(), ex);
+                badClasses.add(type);
+                return false;
+            }
         }
     };
 
