@@ -8,7 +8,18 @@ public class GunAttributes {
     /**
      * 射击伤害
      */
-    public static final RegistryObject<Attribute> BULLET_DAMAGE = GunsmithLib.Attributes.BULLET_DAMAGE;
+    public static final RegistryObject<Attribute> BULLET_DAMAGE = GunsmithLib.Attributes.BULLET_DAMAGE;/**
+
+     * 穿甲倍率
+     * @since 4.6.0
+     */
+    public static final RegistryObject<Attribute> ARMOR_PIERCING_RATIO = GunsmithLib.Attributes.ARMOR_PIERCING_RATIO;
+
+    /**
+     * 爆头倍率
+     * @since 4.6.0
+     */
+    public static final RegistryObject<Attribute> HEADSHOT_MULTIPLIER = GunsmithLib.Attributes.HEADSHOT_MULTIPLIER;
 
     /**
      * 子弹速度

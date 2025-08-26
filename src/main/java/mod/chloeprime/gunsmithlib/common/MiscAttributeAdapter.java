@@ -1,11 +1,10 @@
 package mod.chloeprime.gunsmithlib.common;
 
+import com.tacz.guns.api.GunProperties;
 import com.tacz.guns.api.entity.IGunOperator;
 import com.tacz.guns.api.event.common.EntityHurtByGunEvent;
 import com.tacz.guns.api.event.common.GunDamageSourcePart;
-import com.tacz.guns.resource.modifier.custom.AmmoSpeedModifier;
 import com.tacz.guns.resource.modifier.custom.EffectiveRangeModifier;
-import com.tacz.guns.resource.modifier.custom.RpmModifier;
 import com.tacz.guns.resource.pojo.data.gun.FeedType;
 import com.tacz.guns.util.AttachmentDataUtils;
 import mod.chloeprime.gunsmithlib.Config;
@@ -14,6 +13,7 @@ import mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.fire_control.F
 import mod.chloeprime.gunsmithlib.common.internal.GunAttributeSyncState;
 import mod.chloeprime.gunsmithlib.common.util.GsHelper;
 import mod.chloeprime.gunsmithlib.common.util.InternalBulletCreateEvent;
+import mod.chloeprime.gunsmithlib.mixin.EntityKineticBulletAccessor;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -46,6 +46,10 @@ public class MiscAttributeAdapter {
         if (attacker == null) {
             return;
         }
+        // 爆头
+        if (!isMelee) {
+            event.setHeadshotMultiplier((float) attacker.getAttributeValue(HEADSHOT_MULTIPLIER.get()));
+        }
         // 左键近战武器分散增益
         var coefficient = GsHelper.getBuffCoefficient(event.getGunId(), isMelee);
         var attribute = isMelee ? Attributes.ATTACK_DAMAGE : BULLET_DAMAGE.get();
@@ -63,7 +67,11 @@ public class MiscAttributeAdapter {
             return;
         }
         var bullet = event.getImpl().getBullet();
-
+        // 穿甲
+        if (bullet instanceof EntityKineticBulletAccessor accessor) {
+            accessor.setArmorIgnore((float) attacker.getAttributeValue(ARMOR_PIERCING_RATIO.get()));
+        }
+        // 子弹飞行速度
         var oldMotion = bullet.getDeltaMovement();
         var attribute = BULLET_SPEED.get();
         var oldSpeed = oldMotion.length();
@@ -94,12 +102,13 @@ public class MiscAttributeAdapter {
     }
 
     @SubscribeEvent
+    @SuppressWarnings("UnstableApiUsage")
     public static void defaultValues(LivingEvent.LivingTickEvent event) {
         var user = event.getEntity();
         if (user.level().isClientSide) {
             return;
         }
-        final var interval = 5;
+        final var interval = 2;
         if ((user.level().getGameTime() + user.hashCode()) % interval != 0) {
             return;
         }
@@ -108,20 +117,29 @@ public class MiscAttributeAdapter {
         Gunsmith.getGunInfo(newMH).ifPresentOrElse(gun -> {
             syncState.gunsmith$setInGunMode(true);
             var cache = IGunOperator.fromLivingEntity(user).getCacheProperty();
+            var gunData = gun.index().getGunData();
 
-            double damage = AttachmentDataUtils.getDamageWithAttachment(newMH, gun.index().getGunData()) / gun.index().getBulletData().getBulletAmount();
-            float speed = (cache == null
+            var damage = AttachmentDataUtils.getDamageWithAttachment(newMH, gunData) / gun.index().getBulletData().getBulletAmount();
+            var ap = cache == null
+                    ? AttachmentDataUtils.getArmorIgnoreWithAttachment(newMH, gunData)
+                    : cache.getCache(GunProperties.ARMOR_IGNORE);
+            var headshot = cache == null
+                    ? AttachmentDataUtils.getHeadshotMultiplier(newMH, gunData)
+                    : cache.getCache(GunProperties.HEADSHOT_MULTIPLIER);
+            var speed = (cache == null
                     ? gun.index().getBulletData().getSpeed()
-                    : cache.<Float>getCache(AmmoSpeedModifier.ID)) / 20;
-            int rpm = cache == null
-                    ? gun.index().getGunData().getRoundsPerMinute(gun.getFireMode())
-                    : cache.<Integer>getCache(RpmModifier.ID);
+                    : cache.getCache(GunProperties.AMMO_SPEED)) / 20;
+            var rpm = cache == null
+                    ? gunData.getRoundsPerMinute(gun.getFireMode())
+                    : cache.getCache(GunProperties.ROUNDS_PER_MINUTE);
 
-            double lockRange = cache != null && cache.getCache(EffectiveRangeModifier.ID) instanceof Number range
+            var lockRange = cache != null && cache.getCache(EffectiveRangeModifier.ID) instanceof Number range
                     ? range.doubleValue()
                     : FireControlAttributes.AIM_LOCK_RANGE.get().getDefaultValue();
 
             setBaseValue(user, BULLET_DAMAGE.get(), damage);
+            setBaseValue(user, ARMOR_PIERCING_RATIO.get(), ap);
+            setBaseValue(user, HEADSHOT_MULTIPLIER.get(), headshot);
             setBaseValue(user, BULLET_SPEED.get(), speed);
             setBaseValue(user, RPM.get(), rpm);
             setBaseValue(user, FireControlAttributes.AIM_LOCK_RANGE.get(), lockRange);
@@ -131,6 +149,8 @@ public class MiscAttributeAdapter {
             }
             syncState.gunsmith$setInGunMode(false);
             resetBaseValue(user, BULLET_DAMAGE.get());
+            resetBaseValue(user, ARMOR_PIERCING_RATIO.get());
+            resetBaseValue(user, HEADSHOT_MULTIPLIER.get());
             resetBaseValue(user, BULLET_SPEED.get());
             resetBaseValue(user, RPM.get());
             resetBaseValue(user, FireControlAttributes.AIM_LOCK_RANGE.get());
@@ -152,6 +172,8 @@ public class MiscAttributeAdapter {
         public static void onAttachAttributes(EntityAttributeModificationEvent event) {
             event.getTypes().forEach(et -> addAll(et, event::add,
                     BULLET_DAMAGE,
+                    ARMOR_PIERCING_RATIO,
+                    HEADSHOT_MULTIPLIER,
                     BULLET_SPEED,
                     V_RECOIL,
                     H_RECOIL,
