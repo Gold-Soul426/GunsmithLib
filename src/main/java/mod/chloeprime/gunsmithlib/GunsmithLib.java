@@ -28,6 +28,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 
 import java.awt.*;
@@ -88,6 +89,9 @@ public class GunsmithLib {
         public static final RegistryObject<Attribute> RPM = create("rpm", 300, 1, 1200, SET_SYNCED);
         public static final RegistryObject<Attribute> AMMO_CAPACITY = create("ammo_capacity", 30, 0, Integer.MAX_VALUE);
         public static final RegistryObject<Attribute> RELOAD_SPEED = createPercentBased("reload_speed", 1, 0, Double.POSITIVE_INFINITY, SET_SYNCED);
+
+        @ApiStatus.Internal
+        public static final RegistryObject<Attribute> AMMO_IN_BACKPACK = create("internal_do_not_use_0", -1, -1, Integer.MAX_VALUE, SET_SYNCED);
 
 
         @SuppressWarnings("SameParameterValue")

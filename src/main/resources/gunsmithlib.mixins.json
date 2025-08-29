@@ -6,8 +6,10 @@
   "refmap": "gunsmithlib.refmap.json",
   "mixins": [
     "AlternativeArmorPierceFormulaMixin",
+    "EntityKineticBulletAccessor",
     "ItemCooldownsAccessor",
     "LevelAccessor",
+    "MixinAbstractGunItem",
     "MixinAttachmentData",
     "MixinAttachmentDataUtils",
     "MixinBullet",
@@ -21,7 +23,6 @@
     "MixinModernKineticGunScriptAPI",
     "MixinPlayer",
     "MixinReloadProcedure",
-    "EntityKineticBulletAccessor",
     "client.ProjectileJoinWorldOwnerFixMixin",
     "interactkey.StairBlockAccessor",
     "interactkey.TacInteractKeyAutoInferenceMixin"
