@@ -15,6 +15,12 @@ import java.util.Objects;
 
 @Mod.EventBusSubscriber
 public class CapabilityBasedModCompat {
+    /**
+     * 此处的值要比显示的最大值多一点，
+     * 不然无限备弹的时候，消耗备弹以后显示的值会减少在加回来。
+     */
+    public static final int MAX_DISPLAYED_AMMO_SCANNED = 19999;
+
     public static boolean hasAmmoToConsume(LivingEntity user, ItemStack gunStack) {
         if (user.level().isClientSide) {
             return getClientSyncedAmmoCountInBackpack(user) > 0;
@@ -98,7 +104,7 @@ public class CapabilityBasedModCompat {
                 return;
             }
         }
-        var ammo = consumeAmmoFromPlayer(user, user.getMainHandItem(), Integer.MAX_VALUE, true);
+        var ammo = consumeAmmoFromPlayer(user, user.getMainHandItem(), MAX_DISPLAYED_AMMO_SCANNED, true);
         dataContainer.setBaseValue(ammo);
     }
 
