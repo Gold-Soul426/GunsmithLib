@@ -223,8 +223,6 @@ dependencies {
     runtimeOnly fg.deobf("mekanism:Mekanism:1.20.1-10.4.9.61")
     runtimeOnly fg.deobf("maven.modrinth:plonk:V1OyyHVE")
     // 奇葩限伤/远程免疫怪测试
-    runtimeOnly fg.deobf('curse.maven:farmers-delight-398521:5878214')
-    runtimeOnly fg.deobf('curse.maven:youkais-homecoming-957437:5919029')
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.9.1+1.20.1")
     runtimeOnly fg.deobf('curse.maven:lionfish-api-1001614:5922047')
     runtimeOnly fg.deobf('curse.maven:lendercataclysm-551586:6370058')

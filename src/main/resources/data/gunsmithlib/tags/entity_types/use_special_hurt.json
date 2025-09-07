@@ -3,29 +3,6 @@
   "replace": false,
   "values": [
     {
-      "id": "youkaishomecoming:shrine_maiden",
-      "required": false
-    },
-    {
-      "id": "youkaishomecoming:fairy",
-      "required": false
-    },
-    {
-      "id": "youkaishomecoming:yukari",
-      "required": false
-    },
-    {
-      "id": "youkaishomecoming:kochiya_sanae",
-      "required": false
-    },
-    {
-      "id": "youkaishomecoming:komeiji_koishi",
-      "required": false
-    },
-
-
-
-    {
       "id": "grimoireofgaia:behender",
       "required": false
     },
