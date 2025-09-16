@@ -1,14 +1,19 @@
 package mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.potion_effect;
 
 import com.google.common.base.Suppliers;
+import mod.chloeprime.gunsmithlib.common.entity.AreaEffectCloud3D;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -98,6 +103,18 @@ public class PotionEffectData {
     }
 
     public void applyTo(LivingEntity target) {
+        applyTo(target.getRandom(), target::getEffect, target::addEffect);
+    }
+
+    public void applyTo(AreaEffectCloud3D cloud) {
+        applyTo(cloud.getRandom(), _effect -> null, cloud::addEffect);
+    }
+
+    public void applyTo(
+            RandomSource random,
+            Function<MobEffect, @Nullable MobEffectInstance> current,
+            Consumer<MobEffectInstance> target
+    ) {
         if (getChance() <= 0) {
             return;
         }
@@ -105,18 +122,18 @@ public class PotionEffectData {
         if (effect == null) {
             return;
         }
-        if (getChance() < 1 && target.getRandom().nextFloat() > getChance()) {
+        if (getChance() < 1 && random.nextFloat() > getChance()) {
             return;
         }
         int newLevel;
         if (getMaxStackLevel() > 0) {
-            var existLevel = Optional.ofNullable(target.getEffect(effect)).map(MobEffectInstance::getAmplifier).orElse(-1) + 1;
+            var existLevel = Optional.ofNullable(current.apply(effect)).map(MobEffectInstance::getAmplifier).orElse(-1) + 1;
             newLevel = Mth.clamp(existLevel + getLevel(), 1, getMaxStackLevel());
         } else {
             newLevel = getLevel();
         }
         if (newLevel > 0) {
-            target.addEffect(createInstance(effect, newLevel));
+            target.accept(createInstance(effect, newLevel));
         }
     }
 
