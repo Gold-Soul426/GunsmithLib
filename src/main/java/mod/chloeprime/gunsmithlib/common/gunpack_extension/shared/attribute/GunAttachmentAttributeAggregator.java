@@ -27,10 +27,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static net.minecraft.world.item.ItemStack.ATTRIBUTE_MODIFIER_FORMAT;
 
@@ -82,7 +79,7 @@ public class GunAttachmentAttributeAggregator {
     }
 
     private static final AttachmentType[] ATTACHMENT_TYPE_REGISTRY = AttachmentType.values();
-    private static final Map<Pair<Attribute, AttributeModifier.Operation>, AttributeModifier> MERGE_BUFFER = new LinkedHashMap<>();
+    private static final ThreadLocal<Map<Pair<Attribute, AttributeModifier.Operation>, AttributeModifier>> MERGE_BUFFER = ThreadLocal.withInitial(HashMap::new);
 
     @SubscribeEvent
     public static void onGunAttribute(ItemAttributeModifierEvent event) {
@@ -96,7 +93,7 @@ public class GunAttachmentAttributeAggregator {
         if (gun == null) {
             return;
         }
-        var buffer = MERGE_BUFFER;
+        var buffer = MERGE_BUFFER.get();
         try {
             buffer.clear();
             // 使用 AttributeModifiers 标签覆盖的情况
