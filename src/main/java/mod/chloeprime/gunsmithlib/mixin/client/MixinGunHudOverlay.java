@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -52,6 +53,13 @@ public class MixinGunHudOverlay {
             ForgeGui forgeGui, GuiGraphics graphics, float partialTick, int width, int height
     ) {
         return EnergyWeaponVisuals.HUD.modifyCurrentAmmoDisplay(gui, pX, pY, width, height, () -> original.call(gui, pFont, pText, pX, pY, pColor, pDropShadow));
+    }
+
+    @ModifyArg(
+            method = "render", index = 0,
+            at = @At(value = "INVOKE", remap = true, target = "Lnet/minecraft/client/gui/Font;width(Ljava/lang/String;)I"))
+    private String fixWidthForBatteryDisplayWhenAmmoIsAbove1000(String originalCounterText) {
+        return EnergyWeaponVisuals.HUD.isEnabled() ? "000" : originalCounterText;
     }
 
     @Inject(method = "handleCacheCount", at = @At("TAIL"))
