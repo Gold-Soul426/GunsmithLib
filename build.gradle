@@ -164,6 +164,11 @@ repositories {
         }
     }
 
+    maven {
+        name = "Chloe_Maven"
+        url = "https://maven.chloeprime.cn:4080/releases/"
+    }
+
     maven { url 'https://modmaven.dev/' }
     maven { url 'https://jitpack.io' }
 
@@ -197,6 +202,10 @@ dependencies {
     // If the group id is "net.minecraft" and the artifact id is one of ["client", "server", "joined"],
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    implementation jarJar(fg.deobf("cn.chloeprime.kuroutils2:kuroutils2:2001.2.1.1")) {
+        jarJar.ranged(it, "[2001.2.1.1,)")
+    }
 
     // TACZ
     if (USE_LOCAL_TACZ_V) {
