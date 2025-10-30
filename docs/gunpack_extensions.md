@@ -192,6 +192,10 @@
       // 0 表示完全没有误差
       // 1 表示实际空爆距离会在 (0, 2x设定空爆距离) 之间随机
       "airburst_distances_distribution": 0.25,
+      // 空爆测距仪的测距上限，单位为格。
+      // 留空则表示只支持预设挡位，玩家不能自己测距。
+      // 4.10.0 新增
+      "airburst_rangefinder_max_distance": 200,
       // 近炸引信探测距离，单位为格
       "proximity_fuse_distance": 1.5,
       // 防止这把武器的爆炸炸坏掉落物
