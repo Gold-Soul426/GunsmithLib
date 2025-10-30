@@ -25,6 +25,11 @@
   "attribute.name.gunsmithlib.aim_lock_angle.desc": "Angular lock range for weapons with fire control system. Useless on ordinary weapons without fire control capability",
   "gunsmithlib.item.modifiers.attachment": "When Installed:",
 
+  "key.category.gunsmithlib": "Gunsmith Lib",
+  "key.gunsmithlib.ballistic_computer.desc": "Ballistic Computer",
+
   "effect.gunsmithlib.crossfire": "Crossfire",
-  "subtitle.gunsmithlib.shield_blocks_bullet": "Bullet blocked by shield"
+  "subtitle.gunsmithlib.shield_blocks_bullet": "Bullet blocked by shield",
+
+  "gunsmithlib.message.airburst_rangefinder.too_far": "Too Far"
 }
