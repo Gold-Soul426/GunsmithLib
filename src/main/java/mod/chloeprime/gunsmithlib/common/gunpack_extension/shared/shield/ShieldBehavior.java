@@ -1,16 +1,25 @@
 package mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.shield;
 
+import cn.chloeprime.commons.rpc.RPC;
+import cn.chloeprime.commons.rpc.RPCFlow;
+import cn.chloeprime.commons.rpc.RPCTarget;
+import cn.chloeprime.commons.rpc.RemoteCallable;
 import com.tacz.guns.api.entity.IGunOperator;
 import com.tacz.guns.api.entity.ReloadState;
 import com.tacz.guns.api.event.common.EntityHurtByGunEvent;
+import com.tacz.guns.api.item.IGun;
 import com.tacz.guns.api.item.attachment.AttachmentType;
 import mod.chloeprime.gunsmithlib.GunsmithLib;
+import mod.chloeprime.gunsmithlib.api.client.GunsmithLibAnimationConstant;
 import mod.chloeprime.gunsmithlib.api.util.Gunsmith;
+import mod.chloeprime.gunsmithlib.client.GunsmithLibClient;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.entity.living.ShieldBlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -165,7 +174,29 @@ public class ShieldBehavior {
         }
         if (canBlockBulletDamage(victim, event.getBullet().position(), victim.getMainHandItem())) {
             victim.level().playSound(null, victim, GunsmithLib.SoundEvents.SHIELD_BLOCKS_BULLET.get(), victim.getSoundSource(), 1, 1);
+            if (victim instanceof ServerPlayer player) {
+                RPC.call(RPCTarget.to(player), ShieldBehavior::triggerAnimation, player, true);
+            }
             event.setCanceled(true);
         }
+    }
+
+    /**
+     * 格挡原版伤害时触发状态机信号
+     */
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void triggerAnimationOnBlockingVanillaDamage(ShieldBlockEvent event) {
+        var user = event.getEntity();
+        if (!user.level().isClientSide() && user instanceof ServerPlayer player && IGun.mainHandHoldGun(player)) {
+            RPC.call(RPCTarget.to(player), ShieldBehavior::triggerAnimation, player, false);
+        }
+    }
+
+    @RemoteCallable(flow = RPCFlow.SERVER_TO_CLIENT)
+    private static void triggerAnimation(Player user, boolean isBulletDamage) {
+        var key = isBulletDamage
+                ? GunsmithLibAnimationConstant.GUNSMITHLIB_INPUT_SHIELD_BLOCKS_BULLET
+                : GunsmithLibAnimationConstant.GUNSMITHLIB_INPUT_SHIELD_BLOCKS_DAMAGE;
+        GunsmithLibClient.triggerAnimation(user, key);
     }
 }
