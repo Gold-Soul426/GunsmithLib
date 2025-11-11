@@ -35,6 +35,9 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+import org.luaj.vm2.LuaError;
+import org.luaj.vm2.LuaFunction;
+import org.luaj.vm2.LuaValue;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -336,5 +339,15 @@ public class GsHelper {
             }
         }
         return OptionalInt.of(result);
+    }
+
+    public static LuaFunction checkFunction(LuaValue luaValue) {
+        if (luaValue.isfunction()) {
+            return (LuaFunction) luaValue;
+        } else if (luaValue.isnil()) {
+            return null;
+        } else {
+            throw new LuaError("bad argument: function or nil expected, got " + luaValue.typename());
+        }
     }
 }
