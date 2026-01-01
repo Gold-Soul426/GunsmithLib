@@ -8,6 +8,8 @@ import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import javax.annotation.Nonnull;
+
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class GunsmithLibInput {
     public static final String CATEGORY = "key.category.%s".formatted(GunsmithLib.MOD_ID);
@@ -21,6 +23,18 @@ public class GunsmithLibInput {
 
             @Override
             public boolean conflicts(IKeyConflictContext other) {
+                return false;
+            }
+        },
+
+        UNIVERSAL_CONCURRENT {
+            @Override
+            public boolean isActive() {
+                return KeyConflictContext.UNIVERSAL.isActive();
+            }
+
+            @Override
+            public boolean conflicts(@Nonnull IKeyConflictContext other) {
                 return false;
             }
         }
