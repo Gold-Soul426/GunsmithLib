@@ -104,6 +104,9 @@ public class ChargeableTriggerSystem {
         if (event.phase == TickEvent.Phase.START) {
             return;
         }
+        if (event.player.level().isClientSide()) {
+            return;
+        }
         removeChargeBeginTimeIfNeeded(event.player.getMainHandItem());
     }
 }
