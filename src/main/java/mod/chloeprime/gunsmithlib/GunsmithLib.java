@@ -58,6 +58,10 @@ public class GunsmithLib {
         return new ResourceLocation(MOD_ID, path);
     }
 
+    public static ResourceLocation loc(String namespace, String path) {
+        return new ResourceLocation(namespace, path);
+    }
+
     public static class Attributes {
         private static final Consumer<Attribute> SET_SYNCED = attribute -> attribute.setSyncable(true);
         private static final DeferredRegister<Attribute> REGISTRY = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, MOD_ID);

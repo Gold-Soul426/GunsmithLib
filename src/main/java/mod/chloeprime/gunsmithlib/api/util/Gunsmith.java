@@ -6,7 +6,9 @@ import com.tacz.guns.api.item.IAmmo;
 import com.tacz.guns.api.item.IAttachment;
 import com.tacz.guns.api.item.IGun;
 import com.tacz.guns.api.item.attachment.AttachmentType;
+import com.tacz.guns.api.item.builder.GunItemBuilder;
 import mod.chloeprime.gunsmithlib.common.internal.MagicReloadImpl;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -51,6 +53,17 @@ public class Gunsmith {
         }
         var aid = ait.getAttachmentId(attachment);
         return TimelessAPI.getCommonAttachmentIndex(aid).map(index -> new AttachmentInfo(attachment, ait, aid, index));
+    }
+
+    /**
+     * Create a gun item for fetching gun/ammo data.<p>
+     * Warning: The created gun item lacks necessarily data to be actually shootable.
+     *
+     * @param id gun id
+     * @return a gun item with the given gun id.
+     */
+    public static ItemStack createGunItemFromId(ResourceLocation id) {
+        return GunItemBuilder.create().setId(id).build();
     }
 
     /**

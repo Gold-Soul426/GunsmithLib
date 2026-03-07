@@ -5,14 +5,17 @@ import com.mojang.math.Axis;
 import mod.chloeprime.gunsmithlib.mixin.LevelAccessor;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.UUID;
 
 class ClientProxyImpl {
@@ -53,5 +56,16 @@ class ClientProxyImpl {
 
     static @Nullable Entity getEntityByUuid(Level level, UUID uuid) {
         return ((LevelAccessor) level).invokeGetEntities().get(uuid);
+    }
+
+    static void receiveNoParticleExplodePacket(Vec3 pos, float power, BlockPos[] toBlow, Vec3 knockback) {
+        var level = MC.level;
+        var player = MC.player;
+        if (level == null || player == null) {
+            return;
+        }
+        Explosion explosion = new Explosion(level, null, pos.x(), pos.y(), pos.z(), power, Arrays.asList(toBlow));
+        explosion.finalizeExplosion(false);
+        player.setDeltaMovement(player.getDeltaMovement().add(knockback.x(), knockback.y(), knockback.z()));
     }
 }
