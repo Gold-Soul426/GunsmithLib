@@ -233,6 +233,11 @@ dependencies {
         jarJar.ranged(it, "[0.5.0,)")
     }
 
+    // 光影加载器
+    runtimeOnly fg.deobf("maven.modrinth:embeddium:0.3.31+mc1.20.1")
+    runtimeOnly fg.deobf("maven.modrinth:oculus:1.20.1-1.7.0")
+    runtimeOnly fg.deobf("maven.modrinth:acceleratedrendering:1.0.8-1.20.1-alpha")
+
     runtimeOnly fg.deobf("mekanism:Mekanism:1.20.1-10.4.9.61")
     runtimeOnly fg.deobf("maven.modrinth:plonk:V1OyyHVE")
     // 奇葩限伤/远程免疫怪测试
