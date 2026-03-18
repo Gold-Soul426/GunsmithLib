@@ -61,6 +61,8 @@ public class AmmoVariantSystem {
 
     public static void switchToNextPart(GunInfo gunBefore, @Nullable LivingEntity user) {
         Objects.requireNonNull(gunBefore);
+        var prevAmmo = gunBefore.gunItem().getCurrentAmmoCount(gunBefore.gunStack());
+        var prevBarrel = gunBefore.gunItem().hasBulletInBarrel(gunBefore.gunStack());
 
         if (user != null && user.level().isClientSide()) {
             return;
@@ -91,7 +93,7 @@ public class AmmoVariantSystem {
         if (setGunId(gunBefore, nextGunId, user)) {
             Gunsmith.getGunInfo(gunBefore.gunStack()).ifPresent(gunAfter -> restoreGunStateFromStorage(gunAfter, nextPartData));
             if (user instanceof ServerPlayer ssp) {
-                RPC.call(RPCTarget.to(ssp), AmmoVariantSystem::triggerAnimation, false, nextGunId);
+                RPC.call(RPCTarget.to(ssp), AmmoVariantSystem::triggerAnimation, false, nextGunId, gunBefore.gunId(), prevAmmo, prevBarrel);
             }
         }
     }
@@ -162,6 +164,8 @@ public class AmmoVariantSystem {
 
     public static void switchToVariant(GunInfo gunBefore, int index, @Nullable LivingEntity user) {
         Objects.requireNonNull(gunBefore);
+        var prevAmmo = gunBefore.gunItem().getCurrentAmmoCount(gunBefore.gunStack());
+        var prevBarrel = gunBefore.gunItem().hasBulletInBarrel(gunBefore.gunStack());
 
         if (user != null && user.level().isClientSide()) {
             return;
@@ -194,7 +198,7 @@ public class AmmoVariantSystem {
         if (setGunId(gunBefore, newGunId, user, options)) {
             if (user instanceof ServerPlayer ssp) {
                 if (isSameAmmo) {
-                    RPC.call(RPCTarget.to(ssp), AmmoVariantSystem::triggerAnimation, true, newGunId);
+                    RPC.call(RPCTarget.to(ssp), AmmoVariantSystem::triggerAnimation, true, newGunId, gunBefore.gunId(), prevAmmo, prevBarrel);
                 } else {
                     var newBackpackAmmoAmount = Gunsmith.getGunInfo(gunStack)
                             .map(gun -> GsHelper.scanBackpackAmmo(ssp, gun).orElse(CapabilityBasedModCompat.MAX_DISPLAYED_AMMO_SCANNED))
@@ -277,12 +281,22 @@ public class AmmoVariantSystem {
     }
 
     @RemoteCallable(flow = RPCFlow.SERVER_TO_CLIENT)
-    private static void triggerAnimation(boolean isVariant, ResourceLocation newGunId) {
+    private static void triggerAnimation(
+            boolean isVariant, ResourceLocation newGunId,
+            ResourceLocation prevGunId, int prevAmmo, boolean prevBarrel
+    ) {
         var key = isVariant
                 ? GunsmithLibAnimationConstant.GUNSMITHLIB_INPUT_VARIANT_SWITCHED
                 : GunsmithLibAnimationConstant.GUNSMITHLIB_INPUT_CURRENT_PART_SWITCHED;
+
+        GunsmithLibClient.setPreviousGunId(prevGunId);
+        GunsmithLibClient.setPreviousAmmoInfo(prevAmmo, prevBarrel);
+
         GunsmithLibClient.setClientGunIdAndUpdateAnimationStateMachineContext(newGunId);
         GunsmithLibClient.triggerAnimation(key);
+
+        GunsmithLibClient.setPreviousGunId(null);
+        GunsmithLibClient.setPreviousAmmoInfo(-1, false);
     }
 
     @RemoteCallable(flow = RPCFlow.SERVER_TO_CLIENT)
