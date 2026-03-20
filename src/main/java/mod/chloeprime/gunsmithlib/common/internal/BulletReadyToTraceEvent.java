@@ -6,18 +6,25 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.fml.LogicalSide;
 import org.jetbrains.annotations.ApiStatus;
 
 public class BulletReadyToTraceEvent extends EntityEvent {
     private final Projectile bullet;
     private final Vec3 start, end;
+    private final LogicalSide side;
 
     @ApiStatus.Internal
-    public BulletReadyToTraceEvent(Projectile bullet, Vec3 start, Vec3 end) {
+    public BulletReadyToTraceEvent(Projectile bullet, Vec3 start, Vec3 end, LogicalSide side) {
         super(bullet);
         this.bullet = bullet;
         this.start = start;
         this.end = end;
+        this.side = side;
+    }
+
+    public LogicalSide getSide() {
+        return side;
     }
 
     @Override
@@ -35,10 +42,6 @@ public class BulletReadyToTraceEvent extends EntityEvent {
 
     @ApiStatus.Internal
     public static void onBulletTick(Projectile bullet, int pierce) {
-        if (bullet.level().isClientSide()) {
-            return;
-        }
-
         var velocity = bullet.getDeltaMovement();
         if (velocity.lengthSqr() <= 1e-6) {
             return;
@@ -50,7 +53,8 @@ public class BulletReadyToTraceEvent extends EntityEvent {
         var end = start.add(estimated.asHitResult().getType() == HitResult.Type.MISS
                 ? velocity
                 : direction.scale(estimated.getLength()));
-        var event = new BulletReadyToTraceEvent(bullet, start, end);
+        var side = bullet.level().isClientSide() ? LogicalSide.CLIENT : LogicalSide.SERVER;
+        var event = new BulletReadyToTraceEvent(bullet, start, end, side);
         MinecraftForge.EVENT_BUS.post(event);
     }
 }
