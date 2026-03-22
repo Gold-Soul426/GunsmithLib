@@ -10,6 +10,7 @@ import com.tacz.guns.client.sound.SoundPlayManager;
 import com.tacz.guns.resource.modifier.AttachmentPropertyManager;
 import mod.chloeprime.gunsmithlib.GunsmithLib;
 import mod.chloeprime.gunsmithlib.api.util.Gunsmith;
+import mod.chloeprime.gunsmithlib.client.tooltip.DescriptionalGunAffix;
 import mod.chloeprime.gunsmithlib.client.gunpack_extension.EnhancedGunDisplayInstance;
 import mod.chloeprime.gunsmithlib.client.papi.AirburstDistancePapi;
 import mod.chloeprime.gunsmithlib.client.papi.RangefinderPapi;
@@ -27,6 +28,7 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import org.jetbrains.annotations.ApiStatus;
 
 import javax.annotation.Nullable;
@@ -41,6 +43,11 @@ public class GunsmithLibClient {
     public static void initClient() {
         PapiManager.addPapi(RangefinderPapi.NAME, RangefinderPapi.INSTANCE);
         PapiManager.addPapi(AirburstDistancePapi.NAME, AirburstDistancePapi.INSTANCE);
+    }
+
+    @SubscribeEvent
+    public static void onClientConstruct(FMLConstructModEvent event) {
+        DescriptionalGunAffix.init();
     }
 
     @SubscribeEvent
