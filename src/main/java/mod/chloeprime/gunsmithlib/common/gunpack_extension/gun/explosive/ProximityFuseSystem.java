@@ -3,6 +3,7 @@ package mod.chloeprime.gunsmithlib.common.gunpack_extension.gun.explosive;
 import com.tacz.guns.entity.EntityKineticBullet;
 import mod.chloeprime.gunsmithlib.GunsmithLib;
 import mod.chloeprime.gunsmithlib.api.common.AmmoHitEntityEvent;
+import mod.chloeprime.gunsmithlib.common.internal.AmmoHitAnythingEventPoster;
 import mod.chloeprime.gunsmithlib.common.internal.BulletReadyToTraceEvent;
 import mod.chloeprime.gunsmithlib.common.util.GsHelper;
 import mod.chloeprime.gunsmithlib.common.util.InternalBulletCreateEvent;
@@ -18,7 +19,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -70,13 +70,25 @@ public class ProximityFuseSystem {
             var aabb = AABB.ofSize(rayCastStart, bulletBB.getXsize(), bulletBB.getYsize(), bulletBB.getZsize()).inflate(distance + 4);
             var hit = sphericalTrace(bullet, rayCastStart, distance, aabb, entityTest).orElse(null);
             if (hit != null) {
+                AmmoHitEntityEvent hitEntityEvent;
+                boolean canceled;
                 // 发布 AmmoHitEntityEvent 事件以触发命中粒子效果
                 if (bullet instanceof EntityKineticBullet ekb) {
-                    MinecraftForge.EVENT_BUS.post(new AmmoHitEntityEvent(bullet.level(), hit, hit.getEntity(), ekb, false));
+                    hitEntityEvent = new AmmoHitEntityEvent(bullet.level(), hit, hit.getEntity(), ekb, false);
+                    canceled = AmmoHitAnythingEventPoster.entityPre(hitEntityEvent).isCanceled();
+                } else {
+                    hitEntityEvent = null;
+                    canceled = false;
+                }
+                if (canceled) {
+                    return;
                 }
                 // 爆炸！
                 GsHelper.syncBulletExplodePos(bullet, rayCastStart);
                 accessor.setExplosionDelayCount(0);
+                if (hitEntityEvent != null) {
+                    AmmoHitAnythingEventPoster.entityPost(hitEntityEvent);
+                }
                 return;
             }
         }
