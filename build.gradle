@@ -241,6 +241,7 @@ dependencies {
     runtimeOnly fg.deobf("mekanism:Mekanism:1.20.1-10.4.9.61")
     runtimeOnly fg.deobf("maven.modrinth:plonk:V1OyyHVE")
     runtimeOnly fg.deobf("curse.maven:explosive-enhancement-reforged-1036246:5960819")
+    runtimeOnly fg.deobf("maven.modrinth:spark:1.10.53-forge")
 
     // 奇葩限伤/远程免疫怪测试
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.9.1+1.20.1")
