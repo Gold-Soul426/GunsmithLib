@@ -34,6 +34,7 @@
   "subtitle.gunsmithlib.shield_blocks_bullet": "Bullet blocked by shield",
 
   "gunsmithlib.affix.prefix": "| ",
+  "gunsmithlib.affix.arcana_hint": "§e⚠ §cTaCZ: Arcana is required to switch ammo types",
   "gunsmithlib.affix.explosive": "Explosive",
   "gunsmithlib.affix.explosive_prgrammable": "Programmable Ammo",
   "gunsmithlib.affix.frag": "Fragments",
