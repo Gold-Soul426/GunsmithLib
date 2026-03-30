@@ -3,6 +3,7 @@ package mod.chloeprime.gunsmithlib;
 import com.mojang.logging.LogUtils;
 import mod.chloeprime.gunsmithlib.api.common.GunAttributes;
 import mod.chloeprime.gunsmithlib.api.common.GunLootFunctions;
+import mod.chloeprime.gunsmithlib.client.GunsmithLibClient;
 import mod.chloeprime.gunsmithlib.common.entity.AreaEffectCloud3D;
 import mod.chloeprime.gunsmithlib.common.entity.RangefinderMarker;
 import mod.chloeprime.gunsmithlib.common.gunpack_extension.shared.fire_control.FireControlAttributes;
@@ -26,6 +27,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -51,7 +53,12 @@ public class GunsmithLib {
         SoundEvents.REGISTRY.register(bus);
         EntityTypes.DFR.register(bus);
         bus.addListener(this::commonSetup);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        var loadContext = ModLoadingContext.get();
+        loadContext.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+
+        if (FMLLoader.getDist().isClient()) {
+            GunsmithLibClient.onClientConstruct(loadContext::registerConfig);
+        }
     }
 
     public static ResourceLocation loc(String path) {

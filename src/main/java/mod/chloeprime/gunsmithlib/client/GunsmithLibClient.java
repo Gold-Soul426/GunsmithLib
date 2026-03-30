@@ -27,12 +27,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.IConfigSpec;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import org.jetbrains.annotations.ApiStatus;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class GunsmithLibClient {
@@ -40,19 +42,19 @@ public class GunsmithLibClient {
     private static int prevAmmoAmount = -1;
     private static boolean prevAmmoInBarrel = false;
 
-    public static void initClient() {
-        PapiManager.addPapi(RangefinderPapi.NAME, RangefinderPapi.INSTANCE);
-        PapiManager.addPapi(AirburstDistancePapi.NAME, AirburstDistancePapi.INSTANCE);
-    }
-
-    @SubscribeEvent
-    public static void onClientConstruct(FMLConstructModEvent event) {
+    public static void onClientConstruct(BiConsumer<ModConfig.Type, IConfigSpec<?>> registerConfigFunc) {
+        registerConfigFunc.accept(ModConfig.Type.CLIENT, GunsmithClientConfig.SPEC);
         DescriptionalGunAffix.init();
     }
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(GunsmithLibClient::initClient);
+    }
+
+    public static void initClient() {
+        PapiManager.addPapi(RangefinderPapi.NAME, RangefinderPapi.INSTANCE);
+        PapiManager.addPapi(AirburstDistancePapi.NAME, AirburstDistancePapi.INSTANCE);
     }
 
     @SubscribeEvent
