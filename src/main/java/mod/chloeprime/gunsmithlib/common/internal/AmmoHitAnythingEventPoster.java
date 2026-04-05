@@ -1,10 +1,12 @@
 package mod.chloeprime.gunsmithlib.common.internal;
 
 import com.google.common.base.Suppliers;
+import com.google.common.collect.MapMaker;
 import com.tacz.guns.api.event.server.AmmoHitBlockEvent;
 import mod.chloeprime.gunsmithlib.api.common.AmmoHitAnythingEvent;
 import mod.chloeprime.gunsmithlib.api.common.AmmoHitEntityEvent;
 import mod.chloeprime.gunsmithlib.api.common.AmmoSelfExplodeEvent;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -12,11 +14,14 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.Collections;
+import java.util.Set;
 import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber
 public class AmmoHitAnythingEventPoster {
     private static final Supplier<IEventBus> BUS = Suppliers.memoize(() -> MinecraftForge.EVENT_BUS);
+    private static final Set<Entity> EXEMPTS = Collections.newSetFromMap(new MapMaker().weakKeys().makeMap());
 
     public static AmmoHitEntityEvent entityPre(AmmoHitEntityEvent event) {
         var bus = BUS.get();
@@ -52,6 +57,14 @@ public class AmmoHitAnythingEventPoster {
         var anyPost = new AmmoHitAnythingEvent.Post(event.getLevel(), event.getHitResult(), event.getAmmo());
         bus.post(new InternalEvent.AmmoHitAnything.Post(anyPost));
         bus.post(anyPost);
+    }
+
+    public static void exemptFromSelfExplodeEvent(Entity bullet) {
+        EXEMPTS.add(bullet);
+    }
+
+    public static boolean isExemptedFromSelfExplodeEvent(Entity bullet) {
+        return EXEMPTS.contains(bullet);
     }
 
     public static Event selfPre(AmmoSelfExplodeEvent.Pre event) {
