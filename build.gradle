@@ -233,6 +233,9 @@ dependencies {
         jarJar.ranged(it, "[0.5.0,)")
     }
 
+    // JEI
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:15.20.0.129")
+
     // 光影加载器
     runtimeOnly fg.deobf("maven.modrinth:embeddium:0.3.31+mc1.20.1")
     runtimeOnly fg.deobf("maven.modrinth:oculus:1.20.1-1.7.0")
