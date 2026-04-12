@@ -1,0 +1,18 @@
+{
+  "type": "gunsmithlib:smithing_transform_tacz_content_id",
+  "template": {
+    "item": "minecraft:netherite_upgrade_smithing_template"
+  },
+  "base": {
+    "type": "forge:partial_nbt",
+    "item": "tacz:modern_kinetic_gun",
+    "nbt": {
+      "GunId": "tacz:m107"
+    }
+  },
+  "addition": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "tacz_content_type": "gun",
+  "result_id": "tacz:m95"
+}

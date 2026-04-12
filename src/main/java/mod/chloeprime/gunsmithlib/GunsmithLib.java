@@ -3,6 +3,7 @@ package mod.chloeprime.gunsmithlib;
 import com.mojang.logging.LogUtils;
 import mod.chloeprime.gunsmithlib.api.common.GunAttributes;
 import mod.chloeprime.gunsmithlib.api.common.GunLootFunctions;
+import mod.chloeprime.gunsmithlib.api.common.recipe.GunRecipeSerializers;
 import mod.chloeprime.gunsmithlib.client.GunsmithLibClient;
 import mod.chloeprime.gunsmithlib.common.entity.AreaEffectCloud3D;
 import mod.chloeprime.gunsmithlib.common.entity.RangefinderMarker;
@@ -52,6 +53,7 @@ public class GunsmithLib {
         MobEffects.REGISTRY.register(bus);
         SoundEvents.REGISTRY.register(bus);
         EntityTypes.DFR.register(bus);
+        GunRecipeSerializers.init(bus);
         bus.addListener(this::commonSetup);
         var loadContext = ModLoadingContext.get();
         loadContext.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
