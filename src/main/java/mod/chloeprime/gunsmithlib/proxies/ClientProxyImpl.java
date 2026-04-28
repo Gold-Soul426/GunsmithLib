@@ -16,11 +16,16 @@ import org.joml.Vector4f;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 class ClientProxyImpl {
     private static final Minecraft MC = Minecraft.getInstance();
     private static final PoseStack POSE = new PoseStack();
+
+    static Optional<Level> clientLevel() {
+        return Optional.ofNullable(MC.level);
+    }
 
     static Vec3 bobCompensation(Vec3 original) {
         if (MC.options.getCameraType() != CameraType.FIRST_PERSON || !MC.options.bobView().get()) {
