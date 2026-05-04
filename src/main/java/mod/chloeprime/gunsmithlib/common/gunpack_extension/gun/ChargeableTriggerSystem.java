@@ -22,6 +22,13 @@ import java.util.Optional;
 
 @Mod.EventBusSubscriber
 public class ChargeableTriggerSystem {
+    /**
+     * @since 6.0.0
+     */
+    public static final String DEPRECATION_MESSAGE =
+            "Trying to get GunsmithLib's charge system, which is deprecated and not functional. " +
+            "Please migrate to TaCZ 1.1.8's charge system.";
+
     public static final String PDK_CHARGING = GunsmithLib.loc("charging").toString();
     public static final String PDK_CHARGE_BEGAN_TIME = GunsmithLib.loc("charge_begin_time").toString();
 
