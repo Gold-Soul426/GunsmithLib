@@ -209,9 +209,9 @@ dependencies {
 
     // TACZ
     if (USE_LOCAL_TACZ_V) {
-        implementation fg.deobf('libs:tacz-1.20.1:0430-102328-all')
+        implementation fg.deobf('libs:tacz-1.20.1:0502-104048-all')
     } else {
-        implementation fg.deobf('curse.maven:timeless-and-classics-zero-1028108:7745481-sources-7745491')
+        implementation fg.deobf('curse.maven:timeless-and-classics-zero-1028108:8055552-sources-8055584')
     }
     compileOnly 'com.github.FiguraMC.luaj:luaj-core:3.0.8-figura'
     compileOnly 'com.github.FiguraMC.luaj:luaj-jse:3.0.8-figura'
@@ -238,7 +238,7 @@ dependencies {
 
     // 光影加载器
     runtimeOnly fg.deobf("maven.modrinth:embeddium:0.3.31+mc1.20.1")
-    runtimeOnly fg.deobf("maven.modrinth:oculus:1.20.1-1.7.0")
+    runtimeOnly fg.deobf("maven.modrinth:oculus:1.20.1-1.8.0")
     runtimeOnly fg.deobf("maven.modrinth:acceleratedrendering:1.0.8-1.20.1-alpha")
 
     runtimeOnly fg.deobf("mekanism:Mekanism:1.20.1-10.4.9.61")
