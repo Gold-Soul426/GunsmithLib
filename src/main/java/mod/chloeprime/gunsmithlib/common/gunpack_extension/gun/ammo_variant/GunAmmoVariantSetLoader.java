@@ -1,5 +1,6 @@
 package mod.chloeprime.gunsmithlib.common.gunpack_extension.gun.ammo_variant;
 
+import cn.chloeprime.commons.async.TaskScheduler;
 import cn.chloeprime.commons.rpc.RPC;
 import cn.chloeprime.commons.rpc.RPCFlow;
 import cn.chloeprime.commons.rpc.RPCTarget;
@@ -14,6 +15,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -55,12 +57,16 @@ public class GunAmmoVariantSetLoader extends SimpleCodecResourceReloadListener<G
         event.addListener(GunAmmoVariantSetLoader.INSTANCE);
     }
 
+    private static final TaskScheduler DELAYER = TaskScheduler.createTickBased(LogicalSide.SERVER);
+
     @SubscribeEvent
     public static void syncRegistryDataOnDatapackSync(OnDatapackSyncEvent event) {
         encodeJsonToNBT(INSTANCE.raw).ifPresent(tag -> {
             for (ServerPlayer player : event.getPlayers()) {
-                RPC.call(RPCTarget.to(player), GunAmmoVariantSetLoader::receiveData, tag);
-                GunVariantRegistry.injectGunDisplayInstanceRedirectingDataToClient(player);
+                DELAYER.withCondition(player::isAlive).delay(1, task -> {
+                    RPC.call(RPCTarget.to(player), GunAmmoVariantSetLoader::receiveData, tag);
+                    GunVariantRegistry.injectGunDisplayInstanceRedirectingDataToClient(player);
+                });
             }
         });
     }
