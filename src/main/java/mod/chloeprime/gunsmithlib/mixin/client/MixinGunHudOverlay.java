@@ -35,15 +35,6 @@ public class MixinGunHudOverlay {
      */
     @Shadow @Final private static int MAX_AMMO_COUNT;
 
-    // 剩余弹药数量包括背包内的弹药
-    @Inject(
-            method = "handleCacheCount",
-            at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lcom/tacz/guns/client/gui/overlay/GunHudOverlay;handleInventoryAmmo(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/player/Inventory;)V"))
-    private static void addRemainingAmmoInBackpackToTotalRemainingAmmoCount(LocalPlayer player, ItemStack stack, GunData gunData, IGun iGun, boolean useInventoryAmmo, CallbackInfo ci) {
-        cacheInventoryAmmoCount += CapabilityBasedModCompat.getClientSyncedAmmoCountInBackpack(player);
-        cacheInventoryAmmoCount = Math.min(MAX_AMMO_COUNT, cacheInventoryAmmoCount);
-    }
-
     // at的drawString方法是forge加的，所以不remap
     @WrapOperation(
             method = "render",
